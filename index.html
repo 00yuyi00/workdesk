@@ -359,7 +359,7 @@
   .notes-bar {
     background: #fffef9;
     border-bottom: 1px solid var(--border);
-    padding: 10px 28px;
+    padding: 8px 28px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -372,6 +372,44 @@
     white-space: nowrap;
     letter-spacing: 0.06em;
   }
+
+  .notes-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .notes-toolbar-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .notes-toolbar-btn:hover { border-color: var(--amber-light); }
+  .notes-toolbar-btn.active { background: var(--cream-dark); border-color: var(--amber); color: var(--amber); }
+
+  .notes-color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .notes-color-dot:hover { border-color: var(--amber); }
+  .notes-color-dot.active { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-light); }
 
   .notes-input {
     flex: 1;
@@ -524,6 +562,65 @@
   }
 
   .file-drop-zone input { display: none; }
+
+  .file-type-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .file-type-tab {
+    flex: 1;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    font-family: 'Noto Sans SC', sans-serif;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    letter-spacing: 0.05em;
+  }
+
+  .file-type-tab:hover { color: var(--text-secondary); }
+  .file-type-tab.active { color: var(--amber); border-bottom-color: var(--amber); font-weight: 500; }
+
+  .text-input-area {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    padding: 12px;
+  }
+
+  .text-input-area.active { display: flex; }
+
+  .text-input-area textarea {
+    flex: 1;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--text-primary);
+    background: var(--cream);
+    outline: none;
+    resize: none;
+    line-height: 1.8;
+    transition: border-color 0.2s;
+  }
+
+  .text-input-area textarea:focus { border-color: var(--amber-light); }
+  .text-input-area textarea::placeholder { color: var(--text-muted); }
+
+  .image-viewer-area { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+  .image-viewer-area.active { display: flex; }
+  .image-viewer-area:not(.active) { display: none; }
 
   .drop-icon {
     font-size: 24px;
@@ -1234,6 +1331,13 @@
   <!-- NOTES BAR -->
   <div class="notes-bar">
     <div class="notes-label">📝 备注</div>
+    <div class="notes-toolbar">
+      <button class="notes-toolbar-btn" id="notesBoldBtn" onclick="toggleNotesBold()" title="加粗"><b>B</b></button>
+      <button class="notes-toolbar-btn" id="notesSizeBtn" onclick="toggleNotesSize()" title="放大" style="font-size:14px;">A</button>
+      <div class="notes-color-dot active" style="background:#2c2416;" onclick="setNotesColor('#2c2416',this)" title="黑色"></div>
+      <div class="notes-color-dot" style="background:#c0392b;" onclick="setNotesColor('#c0392b',this)" title="红色"></div>
+      <div class="notes-color-dot" style="background:#2980b9;" onclick="setNotesColor('#2980b9',this)" title="蓝色"></div>
+    </div>
     <input class="notes-input" id="notesInput" placeholder="在此输入本次任务备注、标记或说明…" />
     <button class="notes-save-btn" onclick="saveNote()">保存</button>
     <span class="notes-saved-badge" id="noteSavedBadge">已保存 ✓</span>
@@ -1252,17 +1356,28 @@
         </span>
       </div>
 
-      <div class="file-drop-zone" id="dropZone">
-        <input type="file" id="fileInput" multiple accept="image/*,.pdf" />
-        <div class="drop-icon">🖼</div>
-        <div class="drop-text">拖拽图片到此处<br>或 <span onclick="document.getElementById('fileInput').click()">点击上传</span></div>
+      <div class="file-type-tabs">
+        <button class="file-type-tab active" id="tabImage" onclick="switchFileTab('image')">🖼 图片</button>
+        <button class="file-type-tab" id="tabText" onclick="switchFileTab('text')">📝 文字</button>
       </div>
 
-      <div class="file-viewer-scroll" id="fileViewerScroll">
-        <div class="file-viewer-empty" id="fileViewerEmpty">
-          <div style="font-size:36px;margin-bottom:12px;opacity:0.3">📂</div>
-          上传图片后<br>可在此上下滑动查看
+      <div class="image-viewer-area active" id="imageViewerArea">
+        <div class="file-drop-zone" id="dropZone">
+          <input type="file" id="fileInput" multiple accept="image/*,.pdf" />
+          <div class="drop-icon">🖼</div>
+          <div class="drop-text">拖拽图片到此处<br>或 <span onclick="document.getElementById('fileInput').click()">点击上传</span></div>
         </div>
+
+        <div class="file-viewer-scroll" id="fileViewerScroll">
+          <div class="file-viewer-empty" id="fileViewerEmpty">
+            <div style="font-size:36px;margin-bottom:12px;opacity:0.3">📂</div>
+            上传图片后<br>可在此上下滑动查看
+          </div>
+        </div>
+      </div>
+
+      <div class="text-input-area" id="textInputArea">
+        <textarea id="fileTextInput" placeholder="在此输入文字内容…"></textarea>
       </div>
     </div>
 
@@ -1519,6 +1634,11 @@ const state = {
   notes: '',
   parsedData: null,
   filter: 'all',
+  notesBold: false,
+  notesSize: 13,
+  notesColor: '#2c2416',
+  fileText: '',
+  fileTab: 'image',
 };
 
 function getTaskById(id) {
@@ -1591,6 +1711,7 @@ function setupWorkspaceDivider() {
   setupFileInput();
   setupTaskInput();
   setupWorkspaceDivider();
+  setupFileTextSync();
 
   document.getElementById('notesInput').addEventListener('blur', saveNote);
 })();
@@ -1607,6 +1728,8 @@ async function saveToStorage() {
         notes: state.notes,
         parsed_data: state.parsedData,
         filter_state: state.filter,
+        files: state.files,
+        file_text: state.fileText,
       });
     }
   }
@@ -1646,7 +1769,8 @@ function loadTaskWorkspace(taskRow) {
   state.notes = taskRow.notes || '';
   state.parsedData = taskRow.parsed_data || null;
   state.filter = taskRow.filter_state || 'all';
-  state.files = [];
+  state.files = taskRow.files || [];
+  state.fileText = taskRow.file_text || '';
 }
 
 async function saveCurrentWorkspace() {
@@ -1772,10 +1896,66 @@ function renderWorkspace() {
   }
   applyFilter(state.filter);
   updateFileNav();
+  renderFileText();
 }
 
 function renderNotes() {
-  document.getElementById('notesInput').value = state.notes;
+  const inp = document.getElementById('notesInput');
+  inp.value = state.notes;
+  applyNotesStyle();
+}
+
+function applyNotesStyle() {
+  const inp = document.getElementById('notesInput');
+  inp.style.fontWeight = state.notesBold ? '700' : '300';
+  inp.style.fontSize = state.notesSize + 'px';
+  inp.style.color = state.notesColor;
+  document.getElementById('notesBoldBtn').classList.toggle('active', state.notesBold);
+  document.getElementById('notesSizeBtn').classList.toggle('active', state.notesSize > 13);
+  document.querySelectorAll('.notes-color-dot').forEach(dot => {
+    dot.classList.toggle('active', dot.style.background === state.notesColor || rgbToHex(dot.style.backgroundColor) === state.notesColor);
+  });
+}
+
+function rgbToHex(rgb) {
+  if (!rgb || rgb.startsWith('#')) return rgb;
+  const m = rgb.match(/\d+/g);
+  if (!m || m.length < 3) return rgb;
+  return '#' + m.slice(0,3).map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
+}
+
+function toggleNotesBold() {
+  state.notesBold = !state.notesBold;
+  applyNotesStyle();
+}
+
+function toggleNotesSize() {
+  state.notesSize = state.notesSize > 13 ? 13 : 18;
+  applyNotesStyle();
+}
+
+function setNotesColor(color, el) {
+  state.notesColor = color;
+  applyNotesStyle();
+}
+
+function switchFileTab(tab) {
+  state.fileTab = tab;
+  document.getElementById('tabImage').classList.toggle('active', tab === 'image');
+  document.getElementById('tabText').classList.toggle('active', tab === 'text');
+  document.getElementById('imageViewerArea').classList.toggle('active', tab === 'image');
+  document.getElementById('textInputArea').classList.toggle('active', tab === 'text');
+}
+
+function renderFileText() {
+  const ta = document.getElementById('fileTextInput');
+  if (ta) ta.value = state.fileText;
+}
+
+function setupFileTextSync() {
+  const ta = document.getElementById('fileTextInput');
+  ta.addEventListener('input', () => { state.fileText = ta.value; });
+  ta.addEventListener('blur', () => saveToStorage());
 }
 
 async function saveNote() {
@@ -1809,17 +1989,20 @@ function setupFileInput() {
 function handleFiles(fileList) {
   Array.from(fileList).forEach(file => {
     if (!file.type.startsWith('image/')) return;
-    const url = URL.createObjectURL(file);
-    state.files.push({ name: file.name, url, type: file.type });
+    const reader = new FileReader();
+    reader.onload = e => {
+      state.files.push({ name: file.name, data: e.target.result, type: file.type });
+      updateFileNav();
+    };
+    reader.readAsDataURL(file);
   });
-  updateFileNav();
 }
 
 function deleteFile(index) {
   if (index < 0 || index >= state.files.length) return;
-  URL.revokeObjectURL(state.files[index].url);
   state.files.splice(index, 1);
   updateFileNav();
+  saveToStorage();
 }
 
 function updateFileNav() {
@@ -1840,7 +2023,7 @@ function updateFileNav() {
     const card = document.createElement('div');
     card.className = 'file-card animate-in';
     card.innerHTML = `
-      <img class="file-card-img" src="${f.url}" alt="${escAttr(f.name)}" />
+      <img class="file-card-img" src="${f.data}" alt="${escAttr(f.name)}" />
       <div class="file-card-footer">
         <span>${escHtml(f.name)}</span>
         <button class="file-card-delete" onclick="deleteFile(${i})" title="删除">×</button>
