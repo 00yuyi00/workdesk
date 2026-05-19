@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>数据工作台</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600&family=DM+Serif+Display&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --cream: #fdf8ed;
@@ -1318,6 +1319,10 @@
 </div>
 
 <script>
+const SUPABASE_URL = 'https://hxmnsekubcztlfruwaap.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_shAb1CZUx9bbmHD5Uk2J_A_3ryLPolC';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const FIELD_ZH = {
   status: '招聘状态',
   gender: '性别',
@@ -1522,18 +1527,6 @@ function getTaskById(id) {
 function getCurrentTask() {
   return state.currentTaskId ? getTaskById(state.currentTaskId) : null;
 }
-function getTaskData(taskId) {
-  try {
-    const raw = localStorage.getItem('task_' + taskId);
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) { return null; }
-}
-function setTaskData(taskId, data) {
-  try { localStorage.setItem('task_' + taskId, JSON.stringify(data)); } catch(e) {}
-}
-function removeTaskData(taskId) {
-  try { localStorage.removeItem('task_' + taskId); } catch(e) {}
-}
 
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -1593,9 +1586,6 @@ function setupWorkspaceDivider() {
   document.getElementById('sidebarToggle').style.left = 'var(--sidebar-width)';
 
   loadFromStorage();
-  renderCurrentTask();
-  renderTaskHistory();
-  updateFileNav();
 
   setupDropZone();
   setupFileInput();
@@ -1605,76 +1595,62 @@ function setupWorkspaceDivider() {
   document.getElementById('notesInput').addEventListener('blur', saveNote);
 })();
 
-function saveToStorage() {
-  const data = {
-    tasks: state.tasks,
-    currentTaskId: state.currentTaskId,
-  };
-  try { localStorage.setItem('workdesk_v2', JSON.stringify(data)); } catch(e) {}
+async function saveToStorage() {
   if (state.currentTaskId) {
-    setTaskData(state.currentTaskId, {
-      notes: state.notes,
-      parsedData: state.parsedData,
-      filter: state.filter,
-    });
+    const task = getCurrentTask();
+    if (task) {
+      await sb.from('tasks').upsert({
+        id: task.id,
+        text: task.text,
+        done: task.done,
+        date: task.date,
+        notes: state.notes,
+        parsed_data: state.parsedData,
+        filter_state: state.filter,
+      });
+    }
   }
 }
 
-function loadFromStorage() {
+async function loadFromStorage() {
   try {
-    const raw = localStorage.getItem('workdesk_v2');
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (data.tasks) state.tasks = data.tasks;
-      if (data.currentTaskId) state.currentTaskId = data.currentTaskId;
-      if (state.currentTaskId) loadTaskWorkspace(state.currentTaskId);
+    const { data, error } = await sb
+      .from('tasks')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error || !data || data.length === 0) {
+      renderCurrentTask();
+      renderTaskHistory();
+      updateFileNav();
       return;
     }
-    const oldRaw = localStorage.getItem('workdesk_v1');
-    if (oldRaw) {
-      const old = JSON.parse(oldRaw);
-      if (old.tasks && old.tasks.length > 0) {
-        state.tasks = old.tasks;
-        state.currentTaskId = state.tasks[0].id;
-        if (old.notes) state.notes = old.notes;
-        if (old.parsedData) state.parsedData = old.parsedData;
-        state.tasks.forEach(t => {
-          if (t.id !== state.currentTaskId) {
-            setTaskData(t.id, { notes: '', parsedData: null, filter: 'all' });
-          }
-        });
-        saveToStorage();
-        if (state.currentTaskId) {
-          setTaskData(state.currentTaskId, { notes: state.notes, parsedData: state.parsedData, filter: state.filter });
-        }
-        try { localStorage.removeItem('workdesk_v1'); } catch(e) {}
-      }
-    }
-  } catch(e) {}
+    state.tasks = data.map(row => ({
+      id: row.id,
+      text: row.text,
+      done: row.done,
+      date: row.date,
+    }));
+    state.currentTaskId = state.tasks[0].id;
+    loadTaskWorkspace(state.tasks[0]);
+    renderCurrentTask();
+    renderTaskHistory();
+    renderWorkspace();
+  } catch(e) {
+    renderCurrentTask();
+    renderTaskHistory();
+    updateFileNav();
+  }
 }
 
-function loadTaskWorkspace(taskId) {
-  const data = getTaskData(taskId);
-  if (data) {
-    state.notes = data.notes || '';
-    state.parsedData = data.parsedData || null;
-    state.filter = data.filter || 'all';
-  } else {
-    state.notes = '';
-    state.parsedData = null;
-    state.filter = 'all';
-  }
+function loadTaskWorkspace(taskRow) {
+  state.notes = taskRow.notes || '';
+  state.parsedData = taskRow.parsed_data || null;
+  state.filter = taskRow.filter_state || 'all';
   state.files = [];
 }
 
-function saveCurrentWorkspace() {
-  if (state.currentTaskId) {
-    setTaskData(state.currentTaskId, {
-      notes: state.notes,
-      parsedData: state.parsedData,
-      filter: state.filter,
-    });
-  }
+async function saveCurrentWorkspace() {
+  await saveToStorage();
 }
 
 function setupTaskInput() {
@@ -1684,11 +1660,11 @@ function setupTaskInput() {
   });
 }
 
-function addTask() {
+async function addTask() {
   const inp = document.getElementById('taskInput');
   const text = inp.value.trim();
   if (!text) return;
-  saveCurrentWorkspace();
+  await saveCurrentWorkspace();
   const task = {
     id: Date.now(),
     text,
@@ -1697,26 +1673,25 @@ function addTask() {
   };
   state.tasks.unshift(task);
   state.currentTaskId = task.id;
-  loadTaskWorkspace(task.id);
-  setTaskData(task.id, { notes: '', parsedData: null, filter: 'all' });
+  loadTaskWorkspace({ notes: '', parsed_data: null, filter_state: 'all' });
   inp.value = '';
   renderCurrentTask();
   renderTaskHistory();
   renderWorkspace();
-  saveToStorage();
+  await saveToStorage();
 }
 
-function toggleTask(id) {
+async function toggleTask(id) {
   const t = getTaskById(id);
-  if (t) { t.done = !t.done; renderCurrentTask(); renderTaskHistory(); saveToStorage(); }
+  if (t) { t.done = !t.done; renderCurrentTask(); renderTaskHistory(); await saveToStorage(); }
 }
 
-function deleteTask(id) {
-  removeTaskData(id);
+async function deleteTask(id) {
+  await sb.from('tasks').delete().eq('id', id);
   state.tasks = state.tasks.filter(t => t.id !== id);
   if (state.currentTaskId === id) {
     if (state.tasks.length > 0) {
-      switchToTask(state.tasks[0].id);
+      await switchToTask(state.tasks[0].id);
     } else {
       state.currentTaskId = null;
       state.notes = '';
@@ -1725,20 +1700,19 @@ function deleteTask(id) {
       state.files = [];
       renderCurrentTask();
       renderWorkspace();
-      saveToStorage();
     }
   }
   renderTaskHistory();
 }
 
-function switchToTask(id) {
-  saveCurrentWorkspace();
+async function switchToTask(id) {
+  await saveCurrentWorkspace();
   state.currentTaskId = id;
-  loadTaskWorkspace(id);
+  const { data } = await sb.from('tasks').select('*').eq('id', id).single();
+  if (data) loadTaskWorkspace(data);
   renderCurrentTask();
   renderTaskHistory();
   renderWorkspace();
-  saveToStorage();
 }
 
 function renderCurrentTask() {
@@ -1804,10 +1778,10 @@ function renderNotes() {
   document.getElementById('notesInput').value = state.notes;
 }
 
-function saveNote() {
+async function saveNote() {
   const val = document.getElementById('notesInput').value;
   state.notes = val;
-  saveToStorage();
+  await saveToStorage();
   const badge = document.getElementById('noteSavedBadge');
   badge.classList.add('show');
   setTimeout(() => badge.classList.remove('show'), 1800);
@@ -1890,14 +1864,14 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modalOverlay')) closeModal();
 });
 
-function importJSON() {
+async function importJSON() {
   const raw = document.getElementById('jsonTextarea').value.trim();
   const errEl = document.getElementById('modalError');
   errEl.classList.remove('show');
   try {
     let parsed = JSON.parse(raw);
     state.parsedData = parsed;
-    saveToStorage();
+    await saveToStorage();
     renderDataTable(parsed);
     closeModal();
     document.getElementById('jsonTextarea').value = '';
