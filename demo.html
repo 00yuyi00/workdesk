@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏州美团买菜骑手招聘数据看板</title>
+    <!-- 使用 Tailwind CSS 构建精美响应式 UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Inter & 字体图标 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+<div class="min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500 text-slate-900 p-2 rounded-lg font-bold flex items-center justify-center shadow-inner">
+                    <i class="fa-solid fa-bicycle text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">苏州美团买菜</h1>
+                    <p class="text-xs text-slate-400">骑手招聘数据管理看板</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                    实时整理数据
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 统计指标网格 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- 总站点数 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">统计站点总数</p>
+                    <h3 id="stat-total" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
+                    <i class="fa-solid fa-map-location-dot text-xl"></i>
+                </div>
+            </div>
+            <!-- 平均结算价 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">平均结算价格</p>
+                    <h3 id="stat-avg" class="text-3xl font-bold text-slate-900 mt-1">¥0</h3>
+                </div>
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+                    <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+                </div>
+            </div>
+            <!-- 无 jobCode 预警 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">缺少岗位编号 (JobCode)</p>
+                    <h3 id="stat-missing" class="text-3xl font-bold text-rose-600 mt-1">0</h3>
+                </div>
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-lg">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+            </div>
+            <!-- 最高结算金额 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">最高结算价格</p>
+                    <h3 id="stat-max" class="text-3xl font-bold text-amber-600 mt-1">¥0</h3>
+                </div>
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 原始图片对照缩略图入口 -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-4 w-full sm:w-auto">
+                <!-- 缩略图容器 -->
+                <div onclick="openImageModal()" class="relative group cursor-pointer w-24 h-16 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm flex items-center justify-center">
+                    <img id="thumb-img" src="wecom-temp-672963-22374768035e879a11a6e57a9eabd6cf.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" alt="原始数据缩略图" onerror="handleImageError('thumb')">
+                    
+                    <!-- 失败后的备用占位显示 -->
+                    <div id="thumb-fallback" class="hidden text-slate-400 flex flex-col items-center justify-center">
+                        <i class="fa-regular fa-image text-xl"></i>
+                        <span class="text-[10px] mt-0.5">查看原图</span>
+                    </div>
+
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-200">
+                        <i class="fa-solid fa-magnifying-glass-plus text-white text-base"></i>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-invoice text-amber-500"></i>
+                        数据对照源：5月下达标结算价格表
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-1">26年5月16日-5月31日原始数据单据。点击左侧缩略图可放大比对。</p>
+                </div>
+            </div>
+            <button onclick="openImageModal()" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg transition-colors gap-2 border border-slate-200">
+                <i class="fa-solid fa-maximize"></i>
+                <span>查看原始大图</span>
+            </button>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
+            <div class="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- 搜索与筛选输入 -->
+                <div class="flex-1 flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input id="search-input" type="text" placeholder="搜索站点、联系人、电话、地址或编码..." 
+                               class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-all shadow-sm">
+                    </div>
+                    <select id="code-filter" class="px-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm shadow-sm">
+                        <option value="all">所有编码状态</option>
+                        <option value="has-code">已配对编码</option>
+                        <option value="no-code">缺失编码 (空)</option>
+                    </select>
+                </div>
+
+                <!-- 交互按钮组 -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="btn-copy-table" class="inline-flex items-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm rounded-lg transition-colors shadow-sm gap-2">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>复制表格数据</span>
+                    </button>
+                    <button id="btn-export-csv" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm rounded-lg transition-colors shadow-sm gap-2">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>导出 CSV</span>
+                    </button>
+                    <button id="btn-copy-json" class="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-lg transition-colors shadow-sm gap-2">
+                        <i class="fa-solid fa-code"></i>
+                        <span>复制原始 JSON</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 电脑端：表格视图 -->
+            <div class="hidden lg:block overflow-x-auto">
+                <table class="w-full border-collapse text-left text-sm text-slate-600">
+                    <thead class="bg-slate-100/70 border-b border-slate-200 text-slate-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3.5 font-semibold text-center w-28">操作</th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold text-slate-900 cursor-pointer select-none hover:bg-slate-200/50 transition-colors" onclick="toggleSort('station_name')">
+                                站点名称 <i class="fa-solid fa-sort text-slate-400 text-xs ml-1"></i>
+                            </th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold cursor-pointer select-none hover:bg-slate-200/50 transition-colors" onclick="toggleSort('jobCode')">
+                                岗位编码 (jobCode) <i class="fa-solid fa-sort text-slate-400 text-xs ml-1"></i>
+                            </th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold">详细地址 (detail_address)</th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold text-center">面试联系人</th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold text-center">联系电话</th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold text-right cursor-pointer select-none hover:bg-slate-200/50 transition-colors" onclick="toggleSort('paid_in_amt')">
+                                结算价格 (paid_in_amt) <i class="fa-solid fa-sort text-slate-400 text-xs ml-1"></i>
+                            </th>
+                            <th scope="col" class="px-6 py-3.5 font-semibold max-w-xs">原始岗位名称 (jobName)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-200 bg-white">
+                        <!-- 动态渲染行 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 手机端/平板端：卡片视图 -->
+            <div id="card-container" class="lg:hidden p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 动态渲染卡片 -->
+            </div>
+
+            <!-- 无数据提示 -->
+            <div id="no-data-alert" class="hidden p-12 text-center text-slate-400">
+                <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
+                <p class="text-sm">没有匹配的数据，请调整搜索条件</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            <p>© 2026 苏州美团买菜网点运营中心 · 数据实时清洗及智能解析系统</p>
+        </div>
+    </footer>
+</div>
+
+<!-- 图片放大模态窗 (Lightbox Modal) -->
+<div id="image-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300 opacity-0">
+    <div class="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]">
+        <!-- 头部标题栏 -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <h3 class="text-slate-900 font-bold flex items-center gap-2">
+                <i class="fa-solid fa-image text-amber-500"></i>
+                <span>原始招聘价格数据表对照图</span>
+            </h3>
+            <button onclick="closeImageModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-full hover:bg-slate-200 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <!-- 图像区域与失败引导区 -->
+        <div class="p-6 bg-slate-900 flex-grow overflow-auto flex items-center justify-center min-h-[350px]">
+            <img id="modal-img" src="wecom-temp-672963-22374768035e879a11a6e57a9eabd6cf.jpg" class="max-w-full max-h-[60vh] object-contain rounded shadow-lg border border-slate-700" alt="原始数据表" onerror="handleImageError('modal')">
+            
+            <!-- 失败后对用户的本地配置引导 -->
+            <div id="modal-fallback" class="hidden text-center p-8 max-w-lg">
+                <div class="w-16 h-16 bg-slate-800 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-700">
+                    <i class="fa-regular fa-image text-3xl"></i>
+                </div>
+                <h4 class="text-white font-semibold text-base">本地离线图片配置指南</h4>
+                <p class="text-slate-400 text-xs mt-3 leading-relaxed text-left bg-slate-800/50 p-4 rounded-lg border border-slate-800">
+                    由于浏览器的安全限制，直接在线预览无法直接读取您的本地图片。若需在电脑上完美显示该对照图，请按以下步骤操作：<br><br>
+                    1. 将网页下载保存为 <code class="text-amber-400 font-mono">index.html</code>。<br>
+                    2. 下载刚才上传的图片，并重命名为：<br>
+                    <code class="text-amber-400 font-mono break-all block my-1 bg-slate-900 p-1 rounded text-center select-all">wecom-temp-672963-22374768035e879a11a6e57a9eabd6cf.jpg</code>
+                    3. 将网页文件与该图片放在<b>同一个文件夹</b>内，重新双击打开网页即可。
+                </p>
+            </div>
+        </div>
+        <!-- 页脚控制 -->
+        <div class="px-6 py-3.5 border-t border-slate-200 flex items-center justify-between bg-slate-50 text-xs text-slate-500">
+            <span>信息提示：表格内容为 2026 年 5 月下半月最新版结算方案</span>
+            <a href="wecom-temp-672963-22374768035e879a11a6e57a9eabd6cf.jpg" target="_blank" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-up-right-from-square"></i> 在新页面打开大图
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 自定义通知弹窗 (Toast) -->
+<div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-5 py-3 rounded-lg shadow-xl flex items-center space-x-3 border border-slate-800">
+        <i class="fa-solid fa-circle-check text-emerald-500 text-lg" id="toast-icon"></i>
+        <span id="toast-text" class="text-sm font-medium">提示信息</span>
+    </div>
+</div>
+
+<!-- 数据对象暂存框 (不可见，专用于完美实现 Clipboard 复制整个格式化表格) -->
+<textarea id="clipboard-helper" class="absolute left-[-9999px] top-[-9999px]"></textarea>
+
+<script>
+    // 原始结构化数据
+    const rawData = {
+      "jobs": [
+        {
+          "jobName": "【苏州】美团买菜文溪站骑手招聘",
+          "jobCode": "867391",
+          "changes": [
+            {"field": "station_name", "value": "文溪站"},
+            {"field": "detail_address", "value": "苏州吴中区小石湖路小石城底商美团买菜"},
+            {"field": "interviewContactPerson", "value": "王雷"},
+            {"field": "interviewContactMobile", "value": "18580000040"},
+            {"field": "paid_in_amt", "value": "1700"}
+          ]
+        },
+        {
+          "jobName": "苏州美团买菜兴吴站骑手招聘",
+          "jobCode": "305580",
+          "changes": [
+            {"field": "station_name", "value": "兴吴站"},
+            {"field": "detail_address", "value": "苏州吴中区兴吴路92 号厂区底商"},
+            {"field": "interviewContactPerson", "value": "张斌"},
+            {"field": "interviewContactMobile", "value": "15618616857"},
+            {"field": "paid_in_amt", "value": "1800"}
+          ]
+        },
+        {
+          "jobName": "【当前传递的岗位名称】未知【苏州】美团买菜柏庐站骑手招聘",
+          "jobCode": "429990",
+          "changes": [
+            {"field": "station_name", "value": "柏庐站"},
+            {"field": "detail_address", "value": "昆山市柏庐中路302 号"},
+            {"field": "interviewContactPerson", "value": "王宁"},
+            {"field": "interviewContactMobile", "value": "18701817798"},
+            {"field": "paid_in_amt", "value": "1800"}
+          ]
+        },
+        {
+          "jobName": "【苏州】美团买菜玉山站骑手招聘",
+          "jobCode": "914324",
+          "changes": [
+            {"field": "station_name", "value": "玉山站"},
+            {"field": "detail_address", "value": "苏州虎丘区玉山路99 号"},
+            {"field": "interviewContactPerson", "value": "张晟豪"},
+            {"field": "interviewContactMobile", "value": "13122544385"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "未知【苏州】美团买菜狮山站骑手招聘",
+          "jobCode": "459688",
+          "changes": [
+            {"field": "station_name", "value": "狮山站"},
+            {"field": "detail_address", "value": "苏州市姑苏区三香路1338 号"},
+            {"field": "interviewContactPerson", "value": "李杰"},
+            {"field": "interviewContactMobile", "value": "13219875770"},
+            {"field": "paid_in_amt", "value": "2200"}
+          ]
+        },
+        {
+          "jobName": "美团买菜南河站骑手招聘",
+          "jobCode": "876220",
+          "changes": [
+            {"field": "station_name", "value": "南河站"},
+            {"field": "detail_address", "value": "昆山市开发区南河路8 号"},
+            {"field": "interviewContactPerson", "value": "刘帅超"},
+            {"field": "interviewContactMobile", "value": "15616646110"},
+            {"field": "paid_in_amt", "value": "1600"}
+          ]
+        },
+        {
+          "jobName": "未知【苏州】美团买菜阳山站骑手招聘",
+          "jobCode": "702249",
+          "changes": [
+            {"field": "station_name", "value": "阳山站"},
+            {"field": "detail_address", "value": "苏州市虎丘区兴贤路624 号"},
+            {"field": "interviewContactPerson", "value": "杜亚飞"},
+            {"field": "interviewContactMobile", "value": "13862118237"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "未知【苏州】美团买菜天平站骑手招聘",
+          "jobCode": "321641",
+          "changes": [
+            {"field": "station_name", "value": "天平站"},
+            {"field": "detail_address", "value": "苏州市吴中区金山南路270 号"},
+            {"field": "interviewContactPerson", "value": "绍兴旺"},
+            {"field": "interviewContactMobile", "value": "18621915091"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "苏州美团买菜石湖站骑手招聘",
+          "jobCode": "",
+          "changes": [
+            {"field": "station_name", "value": "石湖站"},
+            {"field": "detail_address", "value": "苏州吴中区吴中商城B 座底商"},
+            {"field": "interviewContactPerson", "value": "常仲飞"},
+            {"field": "interviewContactMobile", "value": "15062353786"},
+            {"field": "paid_in_amt", "value": "1700"}
+          ]
+        },
+        {
+          "jobName": "未知【苏州】美团买菜笠泽站骑手招聘",
+          "jobCode": "852737",
+          "changes": [
+            {"field": "station_name", "value": "笠泽站"},
+            {"field": "detail_address", "value": "苏州吴江区体育路129 号恒玺E 谷"},
+            {"field": "interviewContactPerson", "value": "董瑞"},
+            {"field": "interviewContactMobile", "value": "17715490182"},
+            {"field": "paid_in_amt", "value": "1700"}
+          ]
+        },
+        {
+          "jobName": "【当前传递的岗位名称】未知【苏州】美团买菜司空站骑手招聘",
+          "jobCode": "680115",
+          "changes": [
+            {"field": "station_name", "value": "司空站"},
+            {"field": "detail_address", "value": "苏州市姑苏区乔司空巷28 -38 号"},
+            {"field": "interviewContactPerson", "value": "郑进生"},
+            {"field": "interviewContactMobile", "value": "17351709331"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "苏州美团买菜通安站骑手招聘",
+          "jobCode": "",
+          "changes": [
+            {"field": "station_name", "value": "通安站"},
+            {"field": "detail_address", "value": "苏州市高新区通安镇同心路89 号"},
+            {"field": "interviewContactPerson", "value": "任新新"},
+            {"field": "interviewContactMobile", "value": "13635619195"},
+            {"field": "paid_in_amt", "value": "1700"}
+          ]
+        },
+        {
+          "jobName": "未知【苏州】美团买菜横塘站骑手招聘",
+          "jobCode": "253158",
+          "changes": [
+            {"field": "station_name", "value": "横塘站"},
+            {"field": "detail_address", "value": "苏州市高新区苏福路208 号1 幢101 室"},
+            {"field": "interviewContactPerson", "value": "孙明汉"},
+            {"field": "interviewContactMobile", "value": "18217616891"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "【当前传递的岗位名称】未知【苏州】美团买菜独墅站骑手招聘",
+          "jobCode": "864287",
+          "changes": [
+            {"field": "station_name", "value": "独墅站"},
+            {"field": "detail_address", "value": "苏州市吴中区通达路1875 -3 禾日产业园"},
+            {"field": "interviewContactPerson", "value": "郭超"},
+            {"field": "interviewContactMobile", "value": "13041405226"},
+            {"field": "paid_in_amt", "value": "2000"}
+          ]
+        },
+        {
+          "jobName": "苏州美团买菜广济站骑手招聘",
+          "jobCode": "",
+          "changes": [
+            {"field": "station_name", "value": "广济站"},
+            {"field": "detail_address", "value": "西城永捷南门停车场入口向西五十米"},
+            {"field": "interviewContactPerson", "value": "周强"},
+            {"field": "interviewContactMobile", "value": "15952444561"},
+            {"field": "paid_in_amt", "value": "1800"}
+          ]
+        }
+      ]
+    };
+
+    // 数据格式转换：扁平化单层对象
+    const items = rawData.jobs.map(job => {
+        const item = {
+            jobName: job.jobName,
+            jobCode: job.jobCode || "",
+            station_name: "",
+            detail_address: "",
+            interviewContactPerson: "",
+            interviewContactMobile: "",
+            paid_in_amt: 0
+        };
+        job.changes.forEach(change => {
+            if (change.field === 'paid_in_amt') {
+                item[change.field] = parseFloat(change.value) || 0;
+            } else {
+                item[change.field] = change.value;
+            }
+        });
+        return item;
+    });
+
+    let currentSortField = "";
+    let isSortAsc = true;
+
+    // 图片加载失败时处理
+    window.handleImageError = function(type) {
+        if (type === 'thumb') {
+            const img = document.getElementById('thumb-img');
+            if (img) img.style.display = 'none';
+            const fallback = document.getElementById('thumb-fallback');
+            if (fallback) fallback.classList.remove('hidden');
+        } else if (type === 'modal') {
+            const img = document.getElementById('modal-img');
+            if (img) img.style.display = 'none';
+            const fallback = document.getElementById('modal-fallback');
+            if (fallback) fallback.classList.remove('hidden');
+        }
+    };
+
+    // 模态窗控制：打开
+    window.openImageModal = function() {
+        const modal = document.getElementById("image-modal");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+            modal.classList.remove("opacity-0");
+            modal.classList.add("opacity-100");
+        }, 10);
+    };
+
+    // 模态窗控制：关闭
+    window.closeImageModal = function() {
+        const modal = document.getElementById("image-modal");
+        modal.classList.remove("opacity-100");
+        modal.classList.add("opacity-0");
+        setTimeout(() => {
+            modal.classList.add("hidden");
+        }, 300);
+    };
+
+    // 绑定模态窗事件，支持点击遮罩层关闭
+    document.getElementById("image-modal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            closeImageModal();
+        }
+    });
+
+    // 支持 ESC 键关闭模态窗
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+            closeImageModal();
+        }
+    });
+
+    function filterAndSortData() {
+        const searchText = document.getElementById("search-input").value.trim().toLowerCase();
+        const codeFilter = document.getElementById("code-filter").value;
+
+        let filtered = items.filter(item => {
+            // 搜索过滤
+            const matchSearch = 
+                item.station_name.toLowerCase().includes(searchText) ||
+                item.jobCode.toLowerCase().includes(searchText) ||
+                item.detail_address.toLowerCase().includes(searchText) ||
+                item.interviewContactPerson.toLowerCase().includes(searchText) ||
+                item.interviewContactMobile.toLowerCase().includes(searchText) ||
+                item.jobName.toLowerCase().includes(searchText);
+
+            // 编码状态过滤
+            let matchCode = true;
+            if (codeFilter === "has-code") {
+                matchCode = item.jobCode !== "";
+            } else if (codeFilter === "no-code") {
+                matchCode = item.jobCode === "";
+            }
+
+            return matchSearch && matchCode;
+        });
+
+        // 排序逻辑
+        if (currentSortField) {
+            filtered.sort((a, b) => {
+                let valA = a[currentSortField];
+                let valB = b[currentSortField];
+
+                // 统一字符串转换（解决可能没有 jobCode 造成的非字符串问题）
+                if (typeof valA === "string") valA = valA.toLowerCase();
+                if (typeof valB === "string") valB = valB.toLowerCase();
+
+                if (valA < valB) return isSortAsc ? -1 : 1;
+                if (valA > valB) return isSortAsc ? 1 : -1;
+                return 0;
+            });
+        }
+
+        return filtered;
+    }
+
+    function updateStats() {
+        const total = items.length;
+        const missingCode = items.filter(i => i.jobCode === "").length;
+        
+        let sum = 0;
+        let maxVal = 0;
+        items.forEach(i => {
+            sum += i.paid_in_amt;
+            if (i.paid_in_amt > maxVal) maxVal = i.paid_in_amt;
+        });
+        const avg = total > 0 ? Math.round(sum / total) : 0;
+
+        document.getElementById("stat-total").innerText = total;
+        document.getElementById("stat-avg").innerText = "¥" + avg;
+        document.getElementById("stat-missing").innerText = missingCode;
+        document.getElementById("stat-max").innerText = "¥" + maxVal;
+    }
+
+    function render() {
+        const list = filterAndSortData();
+        const tableBody = document.getElementById("table-body");
+        const cardContainer = document.getElementById("card-container");
+        const noData = document.getElementById("no-data-alert");
+
+        if (list.length === 0) {
+            tableBody.innerHTML = "";
+            cardContainer.innerHTML = "";
+            noData.classList.remove("hidden");
+            return;
+        } else {
+            noData.classList.add("hidden");
+        }
+
+        // 渲染大屏表格
+        tableBody.innerHTML = list.map(item => {
+            const hasCode = item.jobCode !== "";
+            return `
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                        <button onclick="copySingleStation('${item.station_name}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-md font-medium border border-slate-200 transition-colors">
+                            <i class="fa-solid fa-copy mr-1"></i>复制网点
+                        </button>
+                    </td>
+                    <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">${item.station_name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${hasCode 
+                            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">${item.jobCode}</span>` 
+                            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 italic"><i class="fa-solid fa-circle-notch animate-spin mr-1 text-[10px]"></i>缺编码</span>`}
+                    </td>
+                    <td class="px-6 py-4 max-w-sm text-slate-500 truncate" title="${item.detail_address}">${item.detail_address}</td>
+                    <td class="px-6 py-4 text-center whitespace-nowrap font-medium text-slate-800">${item.interviewContactPerson}</td>
+                    <td class="px-6 py-4 text-center whitespace-nowrap text-slate-500">${item.interviewContactMobile}</td>
+                    <td class="px-6 py-4 text-right whitespace-nowrap font-bold text-emerald-600">¥${item.paid_in_amt}</td>
+                    <td class="px-6 py-4 text-xs text-slate-400 max-w-xs truncate" title="${item.jobName}">${item.jobName}</td>
+                </tr>
+            `;
+        }).join('');
+
+        // 渲染移动端卡片
+        cardContainer.innerHTML = list.map(item => {
+            const hasCode = item.jobCode !== "";
+            return `
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-base font-bold text-slate-900">${item.station_name}</h4>
+                            <span class="text-sm font-bold text-emerald-600">¥${item.paid_in_amt}</span>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-600 mb-4">
+                            <div class="flex items-start">
+                                <span class="w-20 text-slate-400 flex-shrink-0">岗位编码:</span>
+                                <span>
+                                    ${hasCode 
+                                        ? `<span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold text-[11px] border border-blue-100">${item.jobCode}</span>` 
+                                        : `<span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-semibold text-[11px] border border-rose-100 italic">缺失</span>`}
+                                </span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="w-20 text-slate-400 flex-shrink-0">面试老师:</span>
+                                <span class="font-medium text-slate-900">${item.interviewContactPerson} (${item.interviewContactMobile})</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="w-20 text-slate-400 flex-shrink-0">详细地址:</span>
+                                <span class="text-slate-500 line-clamp-2">${item.detail_address}</span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="w-20 text-slate-400 flex-shrink-0">系统全名:</span>
+                                <span class="text-slate-400 truncate max-w-[180px] block" title="${item.jobName}">${item.jobName}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 flex gap-2">
+                        <button onclick="copySingleStation('${item.station_name}')" class="flex-1 text-center text-xs py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 transition-colors">
+                            <i class="fa-solid fa-copy mr-1"></i>复制当前网点
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleSort(field) {
+        if (currentSortField === field) {
+            isSortAsc = !isSortAsc;
+        } else {
+            currentSortField = field;
+            isSortAsc = true;
+        }
+        render();
+    }
+
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById("toast-box");
+        const icon = document.getElementById("toast-icon");
+        const text = document.getElementById("toast-text");
+
+        text.innerText = message;
+        if (isSuccess) {
+            icon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
+        } else {
+            icon.className = "fa-solid fa-triangle-exclamation text-rose-500 text-lg";
+        }
+
+        toast.classList.remove("translate-y-10", "opacity-0");
+        toast.classList.add("translate-y-0", "opacity-100");
+
+        setTimeout(() => {
+            toast.classList.remove("translate-y-0", "opacity-100");
+            toast.classList.add("translate-y-10", "opacity-0");
+        }, 2500);
+    }
+
+    // 复制单行信息
+    window.copySingleStation = function(stationName) {
+        const item = items.find(i => i.station_name === stationName);
+        if (!item) return;
+
+        const textToCopy = `站点名称：${item.station_name}
+岗位编码：${item.jobCode || '（空）'}
+面试联系人：${item.interviewContactPerson}
+联系电话：${item.interviewContactMobile}
+详细地址：${item.detail_address}
+结算价格：${item.paid_in_amt}
+原始系统职位名：${item.jobName}`;
+
+        const helper = document.getElementById("clipboard-helper");
+        helper.value = textToCopy;
+        helper.select();
+        try {
+            document.execCommand('copy');
+            showToast(`已成功复制 ${item.station_name} 的全部数据`);
+        } catch (err) {
+            showToast("复制失败，请手动选择复制", false);
+        }
+    };
+
+    // 复制整个表格 (方便完美粘贴至 Excel)
+    document.getElementById("btn-copy-table").addEventListener("click", () => {
+        let tsvContent = "站点名称\t岗位编码(jobCode)\t详细地址\t面试联系人\t联系电话\t结算价格(paid_in_amt)\t原始岗位名称\n";
+        items.forEach(item => {
+            tsvContent += `${item.station_name}\t${item.jobCode}\t${item.detail_address}\t${item.interviewContactPerson}\t${item.interviewContactMobile}\t${item.paid_in_amt}\t${item.jobName}\n`;
+        });
+
+        const helper = document.getElementById("clipboard-helper");
+        helper.value = tsvContent;
+        helper.select();
+        try {
+            document.execCommand('copy');
+            showToast("全表数据已复制，可直接粘贴到 Excel 单元格中！");
+        } catch (err) {
+            showToast("全表复制失败", false);
+        }
+    });
+
+    // 导出到 CSV 文件
+    document.getElementById("btn-export-csv").addEventListener("click", () => {
+        let csvContent = "\ufeff"; // 添加 BOM 防止 Excel 中文乱码
+        csvContent += "站点名称,岗位编码(jobCode),详细地址,面试联系人,联系电话,结算价格(paid_in_amt),原始岗位名称\n";
+        
+        items.forEach(item => {
+            const row = [
+                `"${item.station_name}"`,
+                `"${item.jobCode}"`,
+                `"${item.detail_address.replace(/"/g, '""')}"`,
+                `"${item.interviewContactPerson}"`,
+                `"${item.interviewContactMobile}"`,
+                item.paid_in_amt,
+                `"${item.jobName.replace(/"/g, '""')}"`
+            ];
+            csvContent += row.join(",") + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "苏州美团买菜招聘网点信息汇总.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("CSV 报表已生成并开始下载");
+    });
+
+    // 复制 JSON 数据到剪贴板
+    document.getElementById("btn-copy-json").addEventListener("click", () => {
+        const helper = document.getElementById("clipboard-helper");
+        helper.value = JSON.stringify(rawData, null, 2);
+        helper.select();
+        try {
+            document.execCommand('copy');
+            showToast("原始 JSON 数据已复制到剪贴板");
+        } catch (err) {
+            showToast("JSON 复制失败", false);
+        }
+    });
+
+    // 注册搜索与过滤监听器
+    document.getElementById("search-input").addEventListener("input", render);
+    document.getElementById("code-filter").addEventListener("change", render);
+
+    window.onload = function() {
+        updateStats();
+        render();
+    }
+</script>
+</body>
+</html>
