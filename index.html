@@ -1436,9 +1436,14 @@
           JSON 数据可视化
           <button class="sidebar-toggle" id="showFilesBtn" onclick="toggleFilesPanel()" title="展开文件预览" style="display:none;width:24px;height:24px;font-size:11px;">▶</button>
         </span>
-        <button class="import-json-btn" onclick="openModal()">
-          ⊕ 导入 JSON
-        </button>
+        <span style="display:flex;align-items:center;gap:10px;">
+          <button class="import-json-btn" onclick="openModal()">
+            ⊕ 导入 JSON
+          </button>
+          <button class="import-json-btn" id="viewThinkingBtn" onclick="openThinking()" style="display:none;background:var(--cream-dark);color:var(--text-secondary);border-color:var(--border);">
+            🧠 查看思考
+          </button>
+        </span>
       </div>
       <div class="data-table-area" id="dataTableArea">
         <div class="empty-data" id="emptyData">
@@ -1475,6 +1480,17 @@
     <div class="field-dict-list" id="fieldDictList"></div>
     <div class="modal-actions" style="flex-shrink:0;">
       <button class="btn-ghost" onclick="closeFieldDict()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- THINKING MODAL -->
+<div class="modal-overlay" id="thinkingOverlay" onclick="if(event.target===this)closeThinking()">
+  <div class="modal" style="max-width:720px;max-height:80vh;display:flex;flex-direction:column;">
+    <div class="modal-title">🧠 模型思考过程</div>
+    <div id="thinkingContent" style="flex:1;overflow-y:auto;padding:12px 0;line-height:1.9;font-size:14px;color:var(--text-secondary);white-space:pre-wrap;word-break:break-word;"></div>
+    <div class="modal-actions" style="flex-shrink:0;">
+      <button class="btn-ghost" onclick="closeThinking()">关闭</button>
     </div>
   </div>
 </div>
@@ -1917,6 +1933,7 @@ function renderWorkspace() {
   applyFilter(state.filter);
   updateFileNav();
   renderFileText();
+  updateThinkingBtn(state.parsedData);
 }
 
 function renderNotes() {
@@ -2078,11 +2095,50 @@ async function importJSON() {
     state.parsedData = parsed;
     await saveToStorage();
     renderDataTable(parsed);
+    updateThinkingBtn(parsed);
     closeModal();
     document.getElementById('jsonTextarea').value = '';
   } catch(e) {
     errEl.classList.add('show');
   }
+}
+
+function getReasoningContent(data) {
+  if (!data) return null;
+  if (typeof data.reasoning_content === 'string' && data.reasoning_content.trim()) return data.reasoning_content;
+  if (typeof data.text === 'string') {
+    try {
+      let cleaned = data.text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+      cleaned = cleaned.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+      const inner = JSON.parse(cleaned);
+      if (inner.reasoning_content) return inner.reasoning_content;
+    } catch(e) {}
+  }
+  for (const key of Object.keys(data)) {
+    if (typeof data[key] === 'object' && data[key] !== null) {
+      const found = getReasoningContent(data[key]);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function updateThinkingBtn(data) {
+  const btn = document.getElementById('viewThinkingBtn');
+  const content = getReasoningContent(data);
+  btn.style.display = content ? 'inline-flex' : 'none';
+}
+
+function openThinking() {
+  const content = getReasoningContent(state.parsedData);
+  if (!content) return;
+  const formatted = content.replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '');
+  document.getElementById('thinkingContent').textContent = formatted;
+  document.getElementById('thinkingOverlay').classList.add('open');
+}
+
+function closeThinking() {
+  document.getElementById('thinkingOverlay').classList.remove('open');
 }
 
 function applyFilter(f) {
