@@ -1783,6 +1783,16 @@ function setupWorkspaceDivider() {
   setupWorkspaceDivider();
   setupFileTextSync();
 
+  let _saveTimer = null;
+  function debounceSave() {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(() => saveToStorage(), 800);
+  }
+
+  document.getElementById('notesInput').addEventListener('input', () => {
+    state.notes = document.getElementById('notesInput').value;
+    debounceSave();
+  });
   document.getElementById('notesInput').addEventListener('blur', saveNote);
 })();
 
@@ -1895,9 +1905,6 @@ async function deleteTask(id) {
 
 async function switchToTask(id) {
   await saveCurrentWorkspace();
-  const target = getTaskById(id);
-  state.tasks = state.tasks.filter(t => t.id !== id);
-  state.tasks.unshift(target);
   state.currentTaskId = id;
   const { data } = await sb.from('tasks').select('*').eq('id', id).single();
   if (data) loadTaskWorkspace(data);
@@ -2001,8 +2008,12 @@ function renderFileText() {
 
 function setupFileTextSync() {
   const ta = document.getElementById('fileTextInput');
-  ta.addEventListener('input', () => { state.fileText = ta.value; });
-  ta.addEventListener('blur', () => saveToStorage());
+  let timer = null;
+  ta.addEventListener('input', () => {
+    state.fileText = ta.value;
+    clearTimeout(timer);
+    timer = setTimeout(() => saveToStorage(), 800);
+  });
 }
 
 async function saveNote() {
