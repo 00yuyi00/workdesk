@@ -2133,14 +2133,16 @@ function extractJobs(data) {
   if (Array.isArray(data.jobs)) return data.jobs;
   if (Array.isArray(data) && data.length > 0 && data[0].jobName !== undefined) return data;
   if (typeof data.text === 'string' && data.text.trim()) {
+    let cleaned = data.text;
+    cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/,'');
+    cleaned = cleaned.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
     try {
-      const inner = JSON.parse(data.text);
+      const inner = JSON.parse(cleaned);
       const found = extractJobs(inner);
       if (found) return found;
     } catch(e) {}
     try {
-      const unescaped = data.text.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-      const inner = JSON.parse(unescaped);
+      const inner = JSON.parse(data.text);
       const found = extractJobs(inner);
       if (found) return found;
     } catch(e) {}
@@ -2148,12 +2150,21 @@ function extractJobs(data) {
   for (const key of Object.keys(data)) {
     if (key === 'reasoning_content') continue;
     const val = data[key];
-    if (typeof val === 'string' && val.trim().startsWith('{')) {
+    if (typeof val === 'string') {
+      let cleaned = val;
+      cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/,'');
       try {
-        const inner = JSON.parse(val);
+        const inner = JSON.parse(cleaned);
         const found = extractJobs(inner);
         if (found) return found;
       } catch(e) {}
+      if (val.trim().startsWith('{')) {
+        try {
+          const inner = JSON.parse(val);
+          const found = extractJobs(inner);
+          if (found) return found;
+        } catch(e) {}
+      }
     } else if (typeof val === 'object' && val !== null) {
       const found = extractJobs(val);
       if (found) return found;
