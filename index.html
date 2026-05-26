@@ -1157,6 +1157,111 @@
 
   .animate-in { animation: fadeSlideIn 0.3s ease both; }
 
+  .work-order-id-bar {
+    background: linear-gradient(135deg, var(--cream-dark) 0%, var(--cream) 100%);
+    border: 1px solid var(--amber-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeSlideIn 0.3s ease both;
+  }
+
+  .work-order-id-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .work-order-id-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--amber);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+  }
+
+  .work-order-id-copy {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .work-order-id-copy:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: var(--cream-dark);
+  }
+
+  .format-type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: var(--amber);
+    color: white;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .filters-info {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .filters-info-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 14px;
+  }
+
+  .filter-tag-key {
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  .filter-tag-value {
+    color: var(--amber);
+    font-weight: 500;
+  }
+
   .current-task-name {
     font-size: 13px;
     color: var(--text-primary);
@@ -1323,6 +1428,142 @@
     color: var(--text-secondary);
     line-height: 1.6;
   }
+
+  .field-category-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 12px 6px;
+    margin-top: 8px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--warm-white);
+    z-index: 3;
+  }
+
+  .field-category-header:first-child {
+    margin-top: 0;
+  }
+
+  .field-category-icon {
+    font-size: 16px;
+  }
+
+  .field-category-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: 0.04em;
+  }
+
+  .field-category-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--cream);
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-left: 4px;
+  }
+
+  .field-dict-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    transition: background 0.12s;
+    position: relative;
+  }
+
+  .field-dict-item:hover { background: var(--cream); }
+
+  .field-dict-item:hover .field-item-delete {
+    opacity: 1;
+  }
+
+  .field-item-delete {
+    opacity: 0;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 13px;
+    transition: opacity 0.12s;
+    padding: 2px 4px;
+    flex-shrink: 0;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .field-item-delete:hover { color: #c0392b; }
+
+  .field-add-area {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+    flex-shrink: 0;
+  }
+
+  .field-add-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .field-add-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+
+  .field-add-input {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    outline: none;
+    background: var(--warm-white);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+  }
+
+  .field-add-input:focus { border-color: var(--amber-light); }
+  .field-add-input::placeholder { color: var(--text-muted); }
+
+  .field-add-select {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    outline: none;
+    background: var(--warm-white);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .field-add-select:focus { border-color: var(--amber-light); }
+
+  .field-add-btn {
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--amber);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .field-add-btn:hover { background: #b8870f; }
 </style>
 </head>
 <body>
@@ -1480,12 +1721,27 @@
 
 <!-- FIELD DICT MODAL -->
 <div class="modal-overlay" id="fieldDictOverlay" onclick="if(event.target===this)closeFieldDict()">
-  <div class="modal" style="max-width:640px;max-height:80vh;display:flex;flex-direction:column;">
+  <div class="modal" style="max-width:640px;max-height:85vh;display:flex;flex-direction:column;">
     <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;">
       <span>📋 字段字典</span>
       <input class="field-search" id="fieldSearch" placeholder="搜索字段名或中文…" oninput="filterFieldDict()" />
     </div>
     <div class="field-dict-list" id="fieldDictList"></div>
+    <div class="field-add-area" id="fieldAddArea">
+      <div class="field-add-title">＋ 添加自定义字段</div>
+      <div class="field-add-row">
+        <input class="field-add-input" id="addFieldKey" placeholder="字段名 (如 myField)" style="flex:1;min-width:120px;" />
+        <input class="field-add-input" id="addFieldLabel" placeholder="中文名" style="flex:1;min-width:80px;" />
+        <input class="field-add-input" id="addFieldDesc" placeholder="说明（可选）" style="flex:1.5;min-width:100px;" />
+      </div>
+      <div class="field-add-row">
+        <select class="field-add-select" id="addFieldCategory" style="flex:1;min-width:120px;">
+          <option value="">选择分类…</option>
+        </select>
+        <input class="field-add-input" id="addFieldNewCat" placeholder="或输入新分类名" style="flex:1;min-width:120px;" />
+        <button class="field-add-btn" onclick="addCustomField()">添加</button>
+      </div>
+    </div>
     <div class="modal-actions" style="flex-shrink:0;">
       <button class="btn-ghost" onclick="closeFieldDict()">关闭</button>
     </div>
@@ -1589,89 +1845,158 @@ const FIELD_ZH = {
   text: '文本内容',
   usage: '用量信息',
   reasoning_content: '推理内容',
+  workOrderId: '任务ID',
+  oldCompanyShortName: '原商家简称',
+  newCompanyShortName: '新商家简称',
+  filters: '过滤条件',
+  project: '项目',
+  city: '城市',
+  company_short_name: '商家简称',
+  update_fields: '更新字段列表',
+  fieldName: '字段名',
+  newValue: '新值',
+  new_jobs: '新增岗位列表',
+  welfare: '薪资方案',
+  remark: '备注',
+  industry: '行业',
 };
 
 function zh(key) { return FIELD_ZH[key] || key; }
 
-const FIELD_DICT = [
-  ['status', '招聘状态', '必须输出为整数：默认输出 10，停招/招满为 20'],
-  ['gender', '性别', '严格限定输出为："男"、"女" 或 "不限"'],
-  ['age', '年龄区间', ''],
-  ['needPeopleCount', '需求人数', '必须输出为纯数字字符串，不带单位（如 "20"）'],
-  ['supportPartTime', '是否兼职', '填否代表全职'],
-  ['supportSeasonalWorkers', '是否要寒暑假工', ''],
-  ['payDate', '发薪日', '注意不要与结算时间混淆'],
-  ['healthApplication', '健康证要求/费用', ''],
-  ['interviewContactPerson', '面试联系人', ''],
-  ['interviewContactMobile', '面试电话', ''],
-  ['interviewAddress', '面试地址', ''],
-  ['workTime', '工作时间', '如 "8-10小时"'],
-  ['paid_in_amt', '结算价格', '供应商/中介收入，若有人数阶梯价取最低档，若有分段价取最高总金额，若有全职工和学生工则取全职工价格，必须输出为纯数字字符串'],
-  ['endRuleTime', '保护期/重复推荐无效天数', ''],
-  ['endRuleDays', '结算周期/需在职天数', ''],
-  ['endRuleDetail', '结算规则详情', '包含所有有关结算招聘费的内容；若存在寒假工则特殊处理'],
-  ['extEndRuleDetail', '撞单规则', '重复推荐时的判断规则'],
-  ['boostPolicy', '加码政策', '平台对站点的流量或价格加码'],
-  ['jobStay', '住宿情况', '含房租、水电费、押金、是否提供'],
-  ['jobCarRental', '车辆交通', '含配车情况、租金、换电费、押金'],
-  ['jobWorkCloth', '装备情况', '含工服、餐箱、头盔费用及押金'],
-  ['welfare', '薪资方案', '骑手跑单的直接收入（单价、提成、底薪、各类跑单奖金/补贴），结算、有效出勤等不属于薪资方案'],
-  ['additionalPolicies', '福利内容', '骑手的所有福利或活动内容'],
-  ['specialAdvance', '预支规则', '如预支生活费的具体门槛'],
-  ['averagePrice', '平均单价', ''],
-  ['minSalary', '最低薪酬', ''],
-  ['maxSalary', '最高薪酬', ''],
-  ['averageCount', '平均单量', '单/月'],
-  ['maxUnitPrice', '最高单价', ''],
-  ['minUnitPrice', '最低单价', ''],
-  ['payCycle', '薪资结算周期', ''],
-  ['mealFee', '餐补情况', ''],
-  ['additionalPoliciesCar', '额外政策-车', ''],
-  ['additionalPoliciesStay', '额外政策-住', ''],
-  ['additionalPoliciesCashSubsidy', '额外政策-现金补贴', ''],
-  ['additionalPoliciesItemSubsidy', '额外政策-装备补贴', ''],
-  ['endRulePrice', '结算金额', ''],
-  ['endRuleCount', '结算次数', ''],
-  ['jobIntroduction', '岗位介绍', ''],
-  ['jobDeposit', '入职押金及明细', ''],
-  ['jobRequirements', '岗位要求', ''],
-  ['needStayStore', '是否驻店', ''],
-  ['needXinJiang', '是否要新疆人', ''],
-  ['hasFemaleStay', '是否有女生宿舍', ''],
-  ['partTimeRequest', '兼职要求', ''],
-  ['lowCreditScoreCarRentalDeposit', '低信用分免押租车', '信用分低于550分是否可以免押租车'],
-  ['hasCanteen', '有无食堂', ''],
-  ['specialRemark', '特殊备注', ''],
-  ['secondHand', '是否二手单', ''],
-  ['RiderDeliverySystem', '骑手跑单系统', ''],
-  ['interviewTimeSlot', '面试时间段', ''],
-  ['vacationJobReq', '寒暑假工要求', ''],
-  ['job_code', '岗位编码', ''],
-  ['job_name', '岗位名', ''],
-  ['company_name', '公司名', ''],
-  ['company_short_name', '公司简称', ''],
-  ['station_name', '站点名称', ''],
-  ['station_short_name', '站点简称', ''],
-  ['area_code', '区划代码', ''],
-  ['salary_label', '薪资标签', ''],
-  ['adv_tag', '优势标签', ''],
-  ['commission', '招聘金', ''],
-  ['station_code', '站点编码', ''],
-  ['city_code', '城市编码', ''],
-  ['business_area', '商圈名', ''],
-  ['address', '地址', ''],
-  ['detail_address', '详细地址', ''],
-  ['audit_status', '审核状态', '10=待审核，20=审核通过，30=审核拒绝'],
-  ['refuse_reason', '拒绝原因', '2=站点信息有误，3=其他原因'],
-  ['refuse_memo', '拒绝备注', ''],
-  ['parse_type', '解析类型', '1=自动化表格解析，2=AI文本解析'],
+const FIELD_CATEGORIES = [
+  {
+    name: '基础信息与岗位',
+    icon: '📋',
+    fields: [
+      ['jobName', '岗位名称或站点名称', ''],
+      ['city', '城市', ''],
+      ['project', '项目', '骑手跑单系统（美团/饿了么/达达/小象/其他）'],
+      ['company_short_name', '商家名', ''],
+      ['industry', '行业', '骑手/客服/分拣等等'],
+      ['status', '招聘状态', '必须输出为整数：默认输出 10，停招/招满为 20（下架/停推也为20）'],
+      ['needPeopleCount', '需求人数', '必须输出为纯数字字符串，不带单位（如 "20"）（有时也表达"缺口"）'],
+      ['jobIntroduction', '岗位介绍', ''],
+      ['jobRequirements', '岗位要求', ''],
+      ['interviewAddress', '面试地址', ''],
+      ['interviewContactPerson', '面试联系人', ''],
+      ['interviewContactMobile', '面试联系电话', ''],
+      ['interviewTimeSlot', '面试时间段', ''],
+      ['specialRemark', '特殊备注', '有时候写在注意里面'],
+    ]
+  },
+  {
+    name: '薪资与福利',
+    icon: '💰',
+    fields: [
+      ['averagePrice', '平均单价', ''],
+      ['maxUnitPrice', '最高单价', ''],
+      ['minUnitPrice', '最低单价', ''],
+      ['minSalary', '最低薪酬', ''],
+      ['maxSalary', '最高薪酬', ''],
+      ['averageCount', '平均单量', '单/月'],
+      ['welfare', '薪资结构', '指骑手跑单的直接收入（单价、提成、底薪、各类跑单奖金/补贴），结算、有效出勤等不属于薪资方案'],
+      ['mealFee', '餐补情况', '也包含食堂情况'],
+      ['additionalPolicies', '额外政策', '包含骑手的所有福利或活动内容'],
+      ['specialAdvance', '特殊预支规则', '如预支生活费的具体门槛'],
+      ['payDate', '发薪日期', '注意不要与结算时间产生混淆'],
+      ['payCycle', '薪资结算周期', '日结/周结/月结'],
+    ]
+  },
+  {
+    name: '人员要求',
+    icon: '👤',
+    fields: [
+      ['gender', '性别', '严格限定输出为："男"、"女" 或 "不限"'],
+      ['age', '年龄区间', ''],
+      ['needXinJiang', '是否要新疆人', '是/否/未知'],
+      ['supportPartTime', '是否要兼职', '是/否/未知（注意，填否就是代表全职）'],
+      ['partTimeRequest', '兼职的要求', ''],
+      ['supportSeasonalWorkers', '是否要寒暑假工', '是/否/未知'],
+      ['vacationJobReq', '寒暑假工要求', ''],
+      ['healthApplication', '健康证办理要求/费用', ''],
+    ]
+  },
+  {
+    name: '费用与装备',
+    icon: '🎒',
+    fields: [
+      ['jobDeposit', '入职押金及明细', ''],
+      ['jobStay', '住宿相关情况', '含房租、水电费、押金、是否提供'],
+      ['hasFemaleStay', '是否有女生宿舍', ''],
+      ['needStayStore', '是否驻店', '是/否/未知'],
+      ['jobCarRental', '租车方式及费用', '含配车情况、租金、换电费、押金'],
+      ['jobWorkCloth', '餐箱工服等费用', '含工服、餐箱、头盔费用及押金'],
+    ]
+  },
+  {
+    name: '业务与结算规则',
+    icon: '📊',
+    fields: [
+      ['paid_in_amt', '结算价格', '供应商/中介收入，若有人数阶梯价取最低档，若有分段价取最高总金额，若有全职工和学生工则取全职工价格，必须输出为纯数字字符串，不带单位'],
+      ['workTime', '工作时间', '如 "8-10小时"'],
+      ['secondHand', '是否二手单', '是/否/未知'],
+      ['boostPolicy', '加码政策', '平台对站点的流量或价格加码（"独家爆破""对赌爆破加码"这种行业黑话也属于加码政策）'],
+      ['endRuleTime', '推送保护时间/重复推荐无效天数', ''],
+      ['endRuleDays', '跟进天数/结算周期/需在职天数', ''],
+      ['endRuleCount', '结算次数', ''],
+      ['endRuleDetail', '结算详细规则', '包含所有有关结算招聘费的内容；若存在寒假工则特殊处理，把寒假工的结算单价和规则也放到这里并标记'],
+      ['extEndRuleDetail', '判重规则', '重复推荐时的判断规则'],
+    ]
+  },
 ];
+
+function loadCustomFields() {
+  try {
+    const saved = localStorage.getItem('customFieldDict');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return { categories: [] };
+}
+
+function saveCustomFields(data) {
+  localStorage.setItem('customFieldDict', JSON.stringify(data));
+}
+
+function getAllFields() {
+  const all = [];
+  FIELD_CATEGORIES.forEach(cat => {
+    cat.fields.forEach(f => all.push({ key: f[0], label: f[1], desc: f[2], category: cat.name, builtin: true }));
+  });
+  const custom = loadCustomFields();
+  custom.categories.forEach(cat => {
+    cat.fields.forEach(f => all.push({ key: f[0], label: f[1], desc: f[2], category: cat.name, builtin: false }));
+  });
+  return all;
+}
 
 function openFieldDict() {
   document.getElementById('fieldDictOverlay').classList.add('open');
   document.getElementById('fieldSearch').value = '';
+  populateCategorySelect();
   renderFieldDict('');
   document.getElementById('fieldSearch').focus();
+}
+
+function populateCategorySelect() {
+  const sel = document.getElementById('addFieldCategory');
+  sel.innerHTML = '<option value="">选择分类…</option>';
+  FIELD_CATEGORIES.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat.name;
+    opt.textContent = cat.icon + ' ' + cat.name;
+    sel.appendChild(opt);
+  });
+  const custom = loadCustomFields();
+  const existingCats = new Set(FIELD_CATEGORIES.map(c => c.name));
+  custom.categories.forEach(cat => {
+    if (!existingCats.has(cat.name)) {
+      const opt = document.createElement('option');
+      opt.value = cat.name;
+      opt.textContent = '📌 ' + cat.name;
+      sel.appendChild(opt);
+      existingCats.add(cat.name);
+    }
+  });
 }
 
 function closeFieldDict() {
@@ -1684,17 +2009,124 @@ function filterFieldDict() {
 
 function renderFieldDict(query) {
   const list = document.getElementById('fieldDictList');
-  const items = query
-    ? FIELD_DICT.filter(d => d[0].toLowerCase().includes(query) || d[1].includes(query) || d[2].includes(query))
-    : FIELD_DICT;
-  if (items.length === 0) {
+  list.innerHTML = '';
+
+  const mergedCategories = getFieldCategoriesMerged();
+
+  let hasResult = false;
+  mergedCategories.forEach(cat => {
+    const filteredFields = query
+      ? cat.fields.filter(f => f[0].toLowerCase().includes(query) || f[1].includes(query) || f[2].toLowerCase().includes(query))
+      : cat.fields;
+
+    if (filteredFields.length === 0) return;
+    hasResult = true;
+
+    const header = document.createElement('div');
+    header.className = 'field-category-header';
+    header.innerHTML = `
+      <span class="field-category-icon">${cat.icon || '📌'}</span>
+      <span class="field-category-name">${escHtml(cat.name)}</span>
+      <span class="field-category-count">${filteredFields.length}</span>
+    `;
+    list.appendChild(header);
+
+    filteredFields.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'field-dict-item';
+      const isCustom = f[3] === 'custom';
+      const descHtml = f[2] ? `<span style="color:var(--text-muted);margin-left:4px;">— ${escHtml(f[2])}</span>` : '';
+      const deleteBtn = isCustom
+        ? `<span class="field-item-delete" onclick="deleteCustomField('${escAttr(f[0])}','${escAttr(cat.name)}')" title="删除字段">×</span>`
+        : '';
+      item.innerHTML = `
+        <div class="field-dict-key">${escHtml(f[0])}</div>
+        <div class="field-dict-val">${escHtml(f[1])}${descHtml}</div>
+        ${deleteBtn}
+      `;
+      list.appendChild(item);
+    });
+  });
+
+  if (!hasResult) {
     list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">未找到匹配字段</div>';
+  }
+}
+
+function getFieldCategoriesMerged() {
+  const result = FIELD_CATEGORIES.map(cat => ({
+    name: cat.name,
+    icon: cat.icon,
+    fields: cat.fields.map(f => [...f, 'builtin'])
+  }));
+
+  const custom = loadCustomFields();
+  custom.categories.forEach(customCat => {
+    const existing = result.find(r => r.name === customCat.name);
+    if (existing) {
+      existing.fields.push(...customCat.fields.map(f => [...f, 'custom']));
+    } else {
+      result.push({
+        name: customCat.name,
+        icon: '📌',
+        fields: customCat.fields.map(f => [...f, 'custom'])
+      });
+    }
+  });
+
+  return result;
+}
+
+function addCustomField() {
+  const key = document.getElementById('addFieldKey').value.trim();
+  const label = document.getElementById('addFieldLabel').value.trim();
+  const desc = document.getElementById('addFieldDesc').value.trim();
+  const category = document.getElementById('addFieldCategory').value;
+  const newCat = document.getElementById('addFieldNewCat').value.trim();
+
+  if (!key || !label) return;
+
+  const allFields = getAllFields();
+  if (allFields.some(f => f.key === key)) {
+    alert('字段名 "' + key + '" 已存在');
     return;
   }
-  list.innerHTML = items.map(([key, label, desc]) => {
-    const descHtml = desc ? `<span style="color:var(--text-muted);margin-left:4px;">— ${escHtml(desc)}</span>` : '';
-    return `<div class="field-dict-item"><div class="field-dict-key">${escHtml(key)}</div><div class="field-dict-val">${escHtml(label)}${descHtml}</div></div>`;
-  }).join('');
+
+  const targetCat = newCat || category;
+  if (!targetCat) {
+    alert('请选择或输入一个分类');
+    return;
+  }
+
+  const custom = loadCustomFields();
+  let cat = custom.categories.find(c => c.name === targetCat);
+  if (!cat) {
+    cat = { name: targetCat, fields: [] };
+    custom.categories.push(cat);
+  }
+  cat.fields.push([key, label, desc]);
+  saveCustomFields(custom);
+
+  document.getElementById('addFieldKey').value = '';
+  document.getElementById('addFieldLabel').value = '';
+  document.getElementById('addFieldDesc').value = '';
+  document.getElementById('addFieldNewCat').value = '';
+
+  populateCategorySelect();
+  renderFieldDict(document.getElementById('fieldSearch').value.trim().toLowerCase());
+}
+
+function deleteCustomField(key, categoryName) {
+  const custom = loadCustomFields();
+  const cat = custom.categories.find(c => c.name === categoryName);
+  if (!cat) return;
+  cat.fields = cat.fields.filter(f => f[0] !== key);
+  if (cat.fields.length === 0) {
+    custom.categories = custom.categories.filter(c => c.name !== categoryName);
+  }
+  saveCustomFields(custom);
+  populateCategorySelect();
+  renderFieldDict(document.getElementById('fieldSearch').value.trim().toLowerCase());
 }
 
 const state = {
@@ -2125,7 +2557,8 @@ async function importJSON() {
   const errEl = document.getElementById('modalError');
   errEl.classList.remove('show');
   try {
-    let parsed = JSON.parse(raw);
+    let parsed = tryParseJSON(raw);
+    if (!parsed) throw new Error('parse failed');
     state.parsedData = parsed;
     await saveToStorage();
     renderDataTable(parsed);
@@ -2135,6 +2568,23 @@ async function importJSON() {
   } catch(e) {
     errEl.classList.add('show');
   }
+}
+
+function tryParseJSON(str) {
+  try { return JSON.parse(str); } catch(e) {}
+  try {
+    let cleaned = str.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+    return JSON.parse(cleaned);
+  } catch(e) {}
+  try {
+    let fixed = str.replace(/,\s*([}\]])/g, '$1');
+    return JSON.parse(fixed);
+  } catch(e) {}
+  try {
+    let fixed = str.replace(/[\x00-\x1f]/g, c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
+    return JSON.parse(fixed);
+  } catch(e) {}
+  return null;
 }
 
 function getReasoningContent(data) {
@@ -2198,21 +2648,84 @@ function filterRows() {
   });
 }
 
+function detectJsonFormat(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return 'unknown';
+  if (data.oldCompanyShortName && data.newCompanyShortName) return 'company_rename';
+  if (data.update_fields && Array.isArray(data.update_fields)) return 'field_update';
+  if (data.new_jobs && Array.isArray(data.new_jobs)) return 'new_jobs';
+  if (data.jobs && Array.isArray(data.jobs)) return 'job_changes';
+  return 'unknown';
+}
+
+function renderWorkOrderId(data, area) {
+  if (!data || !data.workOrderId) return;
+  const bar = document.createElement('div');
+  bar.className = 'work-order-id-bar';
+  bar.innerHTML = `
+    <span class="work-order-id-label">任务ID</span>
+    <span class="work-order-id-value">${escHtml(String(data.workOrderId))}</span>
+    <button class="work-order-id-copy" onclick="navigator.clipboard.writeText('${escAttr(String(data.workOrderId))}');this.textContent='✓';setTimeout(()=>this.textContent='📋',1500)" title="复制任务ID">📋</button>
+  `;
+  area.appendChild(bar);
+}
+
+function renderFiltersInfo(filters, area) {
+  if (!filters || typeof filters !== 'object' || Object.keys(filters).length === 0) return;
+  const info = document.createElement('div');
+  info.className = 'filters-info';
+  let html = '<span class="filters-info-label">筛选条件</span>';
+  Object.entries(filters).forEach(([k, v]) => {
+    if (v && String(v).trim()) {
+      html += `<span class="filter-tag"><span class="filter-tag-key">${escHtml(zh(k))}：</span><span class="filter-tag-value">${escHtml(String(v))}</span></span>`;
+    }
+  });
+  info.innerHTML = html;
+  area.appendChild(info);
+}
+
 function renderDataTable(data) {
   const area = document.getElementById('dataTableArea');
   const emptyEl = document.getElementById('emptyData');
   if (emptyEl) emptyEl.style.display = 'none';
   area.innerHTML = '';
 
-  const jobs = extractJobs(data);
+  let actualData = data;
+  if (typeof data.text === 'string' && data.text.trim()) {
+    let found = tryExtractFromString(data.text);
+    if (found) {
+      actualData = found;
+      if (data.workOrderId && !actualData.workOrderId) actualData.workOrderId = data.workOrderId;
+    }
+  }
 
-  if (jobs && jobs.length > 0) {
-    renderJobsSection(jobs, area);
-    updateStats(jobs);
-  } else if (Array.isArray(data)) {
-    renderGenericArray(data, area);
+  const format = detectJsonFormat(actualData);
+
+  if (actualData.workOrderId) {
+    renderWorkOrderId(actualData, area);
+  }
+
+  if (format === 'company_rename') {
+    renderCompanyRename(actualData, area);
+  } else if (format === 'field_update') {
+    renderFieldUpdate(actualData, area);
+  } else if (format === 'new_jobs') {
+    renderNewJobs(actualData, area);
+  } else if (format === 'job_changes') {
+    const jobs = actualData.jobs;
+    if (jobs && jobs.length > 0) {
+      renderJobsSection(jobs, area);
+      updateStats(jobs);
+    }
   } else {
-    renderGenericObject(data, area);
+    const jobs = extractJobs(actualData);
+    if (jobs && jobs.length > 0) {
+      renderJobsSection(jobs, area);
+      updateStats(jobs);
+    } else if (Array.isArray(actualData)) {
+      renderGenericArray(actualData, area);
+    } else {
+      renderGenericObject(actualData, area);
+    }
   }
 
   filterRows();
@@ -2223,38 +2736,15 @@ function extractJobs(data) {
   if (Array.isArray(data.jobs)) return data.jobs;
   if (Array.isArray(data) && data.length > 0 && data[0].jobName !== undefined) return data;
   if (typeof data.text === 'string' && data.text.trim()) {
-    let cleaned = data.text;
-    cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/,'');
-    cleaned = cleaned.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-    try {
-      const inner = JSON.parse(cleaned);
-      const found = extractJobs(inner);
-      if (found) return found;
-    } catch(e) {}
-    try {
-      const inner = JSON.parse(data.text);
-      const found = extractJobs(inner);
-      if (found) return found;
-    } catch(e) {}
+    let found = tryExtractFromString(data.text);
+    if (found) return found;
   }
   for (const key of Object.keys(data)) {
-    if (key === 'reasoning_content') continue;
+    if (key === 'reasoning_content' || key === 'text') continue;
     const val = data[key];
     if (typeof val === 'string') {
-      let cleaned = val;
-      cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/,'');
-      try {
-        const inner = JSON.parse(cleaned);
-        const found = extractJobs(inner);
-        if (found) return found;
-      } catch(e) {}
-      if (val.trim().startsWith('{')) {
-        try {
-          const inner = JSON.parse(val);
-          const found = extractJobs(inner);
-          if (found) return found;
-        } catch(e) {}
-      }
+      let found = tryExtractFromString(val);
+      if (found) return found;
     } else if (typeof val === 'object' && val !== null) {
       const found = extractJobs(val);
       if (found) return found;
@@ -2263,8 +2753,201 @@ function extractJobs(data) {
   return null;
 }
 
+function tryExtractFromString(str) {
+  if (!str || typeof str !== 'string') return null;
+  let cleaned = str.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+  const attempts = [
+    cleaned,
+    cleaned.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\'),
+    str.trim(),
+    str.trim().replace(/,\s*([}\]])/g, '$1')
+  ];
+  for (const attempt of attempts) {
+    try {
+      const inner = JSON.parse(attempt);
+      if (inner) {
+        const found = extractJobs(inner);
+        if (found) return found;
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
+function renderCompanyRename(data, area) {
+  const sec = createSection('商家简称变更', 'company_rename', area);
+  const badge = sec.querySelector('.json-section-title');
+  const formatBadge = document.createElement('span');
+  formatBadge.className = 'format-type-badge';
+  formatBadge.textContent = '商家简称变更';
+  badge.appendChild(formatBadge);
+
+  if (data.filters) renderFiltersInfo(data.filters, sec);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'table-wrap';
+  const table = document.createElement('table');
+  table.className = 'data-table';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>原商家简称</th><th>新商家简称</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  const tr = document.createElement('tr');
+  const tdOld = document.createElement('td');
+  tdOld.innerHTML = `<span style="color:var(--text-muted);text-decoration:line-through;">${escHtml(data.oldCompanyShortName || '—')}</span>`;
+  const tdNew = document.createElement('td');
+  tdNew.innerHTML = `<span style="color:var(--amber);font-weight:500;">${escHtml(data.newCompanyShortName || '—')}</span>`;
+  const tdArrow = document.createElement('td');
+  tdArrow.style.cssText = 'text-align:center;color:var(--amber);font-size:16px;';
+  tdArrow.textContent = '→';
+
+  thead.querySelector('tr').innerHTML = '<th>原商家简称</th><th style="width:40px;text-align:center;">→</th><th>新商家简称</th>';
+
+  tr.appendChild(tdOld);
+  tr.appendChild(tdArrow);
+  tr.appendChild(tdNew);
+  tbody.appendChild(tr);
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  sec.appendChild(wrap);
+}
+
+function renderFieldUpdate(data, area) {
+  const sec = createSection('字段更新', 'field_update', area);
+  const badge = sec.querySelector('.json-section-title');
+  const formatBadge = document.createElement('span');
+  formatBadge.className = 'format-type-badge';
+  formatBadge.textContent = '字段更新';
+  badge.appendChild(formatBadge);
+
+  if (data.filters) renderFiltersInfo(data.filters, sec);
+
+  const fields = data.update_fields || [];
+  if (fields.length === 0) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'table-wrap';
+  const table = document.createElement('table');
+  table.className = 'data-table';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML = '<tr><th>#</th><th>字段名</th><th>中文名</th><th>新值</th></tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  fields.forEach((f, i) => {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-code', '');
+
+    const tdIdx = document.createElement('td');
+    tdIdx.textContent = i + 1;
+    tdIdx.style.cssText = 'color:var(--text-muted);font-size:11px;';
+    tr.appendChild(tdIdx);
+
+    const tdFieldName = document.createElement('td');
+    const fieldSpan = document.createElement('span');
+    fieldSpan.className = 'job-code';
+    fieldSpan.style.background = '#5b4a2a';
+    fieldSpan.textContent = f.fieldName || '—';
+    tdFieldName.appendChild(fieldSpan);
+    tr.appendChild(tdFieldName);
+
+    const tdFieldLabel = document.createElement('td');
+    tdFieldLabel.textContent = zh(f.fieldName || '');
+    tr.appendChild(tdFieldLabel);
+
+    const tdValue = document.createElement('td');
+    tdValue.textContent = f.newValue || '—';
+    tdValue.style.maxWidth = '400px';
+    tdValue.style.wordBreak = 'break-all';
+    tr.appendChild(tdValue);
+
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  sec.appendChild(wrap);
+
+  updateStats([{jobCode: ''}, ...fields.map(() => ({jobCode: ''}))]);
+}
+
+function renderNewJobs(data, area) {
+  const jobs = data.new_jobs || [];
+  const sec = createSection('新增岗位', jobs.length + ' 条记录', area);
+  const badge = sec.querySelector('.json-section-title');
+  const formatBadge = document.createElement('span');
+  formatBadge.className = 'format-type-badge';
+  formatBadge.textContent = '新增岗位';
+  badge.appendChild(formatBadge);
+
+  if (jobs.length === 0) return;
+
+  const allKeys = new Set();
+  jobs.forEach(j => { if (typeof j === 'object' && j) Object.keys(j).forEach(k => allKeys.add(k)); });
+  const cols = Array.from(allKeys);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'table-wrap';
+  const table = document.createElement('table');
+  table.className = 'data-table';
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  const thIdx = document.createElement('th');
+  thIdx.textContent = '#';
+  headerRow.appendChild(thIdx);
+  cols.forEach(c => {
+    const th = document.createElement('th');
+    th.textContent = zh(c);
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  jobs.forEach((job, i) => {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-code', job.jobCode || '');
+
+    const tdIdx = document.createElement('td');
+    tdIdx.textContent = i + 1;
+    tdIdx.style.cssText = 'color:var(--text-muted);font-size:11px;';
+    tr.appendChild(tdIdx);
+
+    cols.forEach(c => {
+      const td = document.createElement('td');
+      const val = job[c];
+      if (val === null || val === undefined) {
+        td.innerHTML = '<span style="color:var(--text-muted);font-size:11px">—</span>';
+      } else if (typeof val === 'object') {
+        td.textContent = JSON.stringify(val);
+      } else {
+        td.textContent = String(val);
+        if (c === 'welfare') {
+          td.style.maxWidth = '280px';
+          td.style.wordBreak = 'break-all';
+        }
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  sec.appendChild(wrap);
+
+  updateStats(jobs.map(j => ({jobCode: j.jobCode || ''})));
+}
+
 function renderJobsSection(jobs, area) {
   const sec = createSection('岗位变更数据 (jobs)', jobs.length + ' 条记录', area);
+  const formatBadge = document.createElement('span');
+  formatBadge.className = 'format-type-badge';
+  formatBadge.textContent = '岗位变更';
+  sec.querySelector('.json-section-title').appendChild(formatBadge);
 
   const allFields = new Set();
   jobs.forEach(j => {
