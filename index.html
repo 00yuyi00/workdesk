@@ -857,6 +857,7 @@
   .data-table tr:hover td { background: var(--cream); }
 
   .data-table tr.hidden-row { display: none; }
+  .data-table tr.dup-highlight { background: var(--dup-bg, transparent); }
 
   .job-code {
     font-family: 'Courier New', monospace;
@@ -3188,6 +3189,46 @@ function updateStats(jobs) {
   document.getElementById('statHasCodeVal').textContent = hasCode;
   document.getElementById('statNoCodeVal').textContent = noCode;
   document.getElementById('statDupCodeVal').textContent = dupCode;
+
+  highlightDupCodes(codeCount);
+}
+
+const DUP_COLORS = [
+  'rgba(231,76,60,0.12)',
+  'rgba(52,152,219,0.12)',
+  'rgba(46,204,113,0.12)',
+  'rgba(241,196,15,0.12)',
+  'rgba(155,89,182,0.12)',
+  'rgba(230,126,34,0.12)',
+  'rgba(26,188,156,0.12)',
+  'rgba(236,100,150,0.12)',
+];
+
+function highlightDupCodes(codeCount) {
+  // 先清除所有高亮
+  document.querySelectorAll('.data-table tbody tr.dup-highlight').forEach(row => {
+    row.classList.remove('dup-highlight');
+    row.style.removeProperty('--dup-bg');
+  });
+
+  // 找出重复的 code
+  const dupCodes = Object.entries(codeCount).filter(([, c]) => c > 1).map(([code]) => code);
+  if (dupCodes.length === 0) return;
+
+  // 为每个重复 code 分配颜色
+  const codeColorMap = {};
+  dupCodes.forEach((code, i) => {
+    codeColorMap[code] = DUP_COLORS[i % DUP_COLORS.length];
+  });
+
+  // 给行上色
+  document.querySelectorAll('.data-table tbody tr[data-code]').forEach(row => {
+    const code = row.getAttribute('data-code');
+    if (codeColorMap[code]) {
+      row.classList.add('dup-highlight');
+      row.style.setProperty('--dup-bg', codeColorMap[code]);
+    }
+  });
 }
 
 function escHtml(str) {
