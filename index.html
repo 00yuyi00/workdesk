@@ -318,6 +318,72 @@
     color: var(--text-muted);
   }
 
+  /* ── TOP TAB BAR ── */
+  .top-tab-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    flex-shrink: 0;
+    gap: 0;
+  }
+
+  .top-tab {
+    padding: 12px 24px;
+    font-size: 13px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    letter-spacing: 0.04em;
+  }
+
+  .top-tab:hover {
+    color: var(--text-secondary);
+  }
+
+  .top-tab.active {
+    color: var(--text-primary);
+    font-weight: 500;
+    border-bottom-color: var(--amber);
+  }
+
+  .tab-panel {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .tab-panel.active {
+    display: flex;
+  }
+
+  .raw-message-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    gap: 16px;
+  }
+
+  .raw-message-empty-icon {
+    font-size: 48px;
+    opacity: 0.3;
+  }
+
+  .raw-message-empty-text {
+    font-size: 14px;
+    opacity: 0.6;
+  }
+
   /* ── STATS PANEL ── */
   .stats-panel {
     background: var(--warm-white);
@@ -410,103 +476,6 @@
 
   .filter-pill:hover { border-color: var(--amber-light); color: var(--text-primary); }
   .filter-pill.active { background: var(--amber); color: white; border-color: var(--amber); }
-
-  /* ── NOTES BAR ── */
-  .notes-bar {
-    background: #fffef9;
-    border-bottom: 1px solid var(--border);
-    padding: 8px 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-
-  .notes-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    white-space: nowrap;
-    letter-spacing: 0.06em;
-  }
-
-  .notes-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  .notes-toolbar-btn {
-    width: 26px;
-    height: 26px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-    font-family: 'Noto Sans SC', sans-serif;
-  }
-
-  .notes-toolbar-btn:hover { border-color: var(--amber-light); }
-  .notes-toolbar-btn.active { background: var(--cream-dark); border-color: var(--amber); color: var(--amber); }
-
-  .notes-color-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-
-  .notes-color-dot:hover { border-color: var(--amber); }
-  .notes-color-dot.active { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-light); }
-
-  .notes-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid transparent;
-    padding: 4px 0;
-    font-size: 13px;
-    font-family: 'Noto Sans SC', sans-serif;
-    color: var(--text-secondary);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .notes-input:focus { border-bottom-color: var(--amber-soft); }
-  .notes-input::placeholder { color: var(--text-muted); font-style: italic; }
-
-  .notes-save-btn {
-    padding: 4px 14px;
-    border-radius: 20px;
-    background: transparent;
-    border: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-family: 'Noto Sans SC', sans-serif;
-    transition: all 0.18s;
-    white-space: nowrap;
-  }
-
-  .notes-save-btn:hover { border-color: var(--amber); color: var(--amber); }
-
-  .notes-saved-badge {
-    font-size: 10px;
-    color: var(--amber);
-    opacity: 0;
-    transition: opacity 0.3s;
-    white-space: nowrap;
-  }
-
-  .notes-saved-badge.show { opacity: 1; }
 
   /* ── WORKSPACE ── */
   .workspace {
@@ -1568,18 +1537,34 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
+<!-- SIDEBAR: Dashboard -->
+<aside class="sidebar" id="sidebarDashboard">
   <div class="sidebar-header">
     <div class="sidebar-logo">WorkDesk</div>
     <div class="sidebar-sub">数据工作台</div>
   </div>
   <div class="sidebar-section">任务列表</div>
-  <div class="task-list" id="taskList">
-    <div class="task-empty" id="taskEmpty">暂无任务，在下方新建</div>
+  <div class="task-list" id="taskListDashboard">
+    <div class="task-empty" id="taskEmptyDashboard">暂无任务，在下方新建</div>
   </div>
   <div class="add-task-area">
-    <textarea class="add-task-input" id="taskInput" placeholder="输入新任务内容…" rows="1"></textarea>
+    <textarea class="add-task-input" id="taskInputDashboard" placeholder="输入新任务内容…" rows="1"></textarea>
+    <button class="add-task-btn" onclick="addTask()">＋ 新建任务</button>
+  </div>
+</aside>
+
+<!-- SIDEBAR: Raw -->
+<aside class="sidebar collapsed" id="sidebarRaw">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">WorkDesk</div>
+    <div class="sidebar-sub">原始消息</div>
+  </div>
+  <div class="sidebar-section">任务列表</div>
+  <div class="task-list" id="taskListRaw">
+    <div class="task-empty" id="taskEmptyRaw">暂无任务，在下方新建</div>
+  </div>
+  <div class="add-task-area">
+    <textarea class="add-task-input" id="taskInputRaw" placeholder="输入新任务内容…" rows="1"></textarea>
     <button class="add-task-btn" onclick="addTask()">＋ 新建任务</button>
   </div>
 </aside>
@@ -1598,6 +1583,15 @@
     </div>
   </div>
 
+  <!-- TOP TAB BAR -->
+  <div class="top-tab-bar">
+    <button class="top-tab active" id="topTab1" onclick="switchTopTab('dashboard')">可视化数据看板</button>
+    <button class="top-tab" id="topTab2" onclick="switchTopTab('raw')">原始消息展示</button>
+  </div>
+
+  <!-- TAB PANEL 1: 可视化数据看板 -->
+  <div class="tab-panel active" id="tabPanelDashboard">
+
   <!-- STATS PANEL -->
   <div class="stats-panel" id="statsPanel">
     <div class="stat-card" id="statTotal" onclick="applyFilter('all')">
@@ -1615,28 +1609,19 @@
       <div class="stat-value" id="statNoCodeVal">—</div>
       <div class="stat-desc">缺失 jobCode</div>
     </div>
+    <div class="stat-card" id="statDupCode" onclick="applyFilter('dupCode')">
+      <div class="stat-label">编码重复</div>
+      <div class="stat-value" id="statDupCodeVal">—</div>
+      <div class="stat-desc">jobCode 重复</div>
+    </div>
 
     <div class="filter-pills">
       <span class="stats-filter-label">筛选：</span>
       <button class="filter-pill active" id="pill-all" onclick="applyFilter('all')">全部</button>
       <button class="filter-pill" id="pill-hasCode" onclick="applyFilter('hasCode')">有编码</button>
       <button class="filter-pill" id="pill-noCode" onclick="applyFilter('noCode')">无编码</button>
+      <button class="filter-pill" id="pill-dupCode" onclick="applyFilter('dupCode')">编码重复</button>
     </div>
-  </div>
-
-  <!-- NOTES BAR -->
-  <div class="notes-bar">
-    <div class="notes-label">📝 备注</div>
-    <div class="notes-toolbar">
-      <button class="notes-toolbar-btn" id="notesBoldBtn" onclick="toggleNotesBold()" title="加粗"><b>B</b></button>
-      <button class="notes-toolbar-btn" id="notesSizeBtn" onclick="toggleNotesSize()" title="放大" style="font-size:14px;">A</button>
-      <div class="notes-color-dot active" style="background:#2c2416;" onclick="setNotesColor('#2c2416',this)" title="黑色"></div>
-      <div class="notes-color-dot" style="background:#c0392b;" onclick="setNotesColor('#c0392b',this)" title="红色"></div>
-      <div class="notes-color-dot" style="background:#2980b9;" onclick="setNotesColor('#2980b9',this)" title="蓝色"></div>
-    </div>
-    <input class="notes-input" id="notesInput" placeholder="在此输入本次任务备注、标记或说明…" />
-    <button class="notes-save-btn" onclick="saveNote()">保存</button>
-    <span class="notes-saved-badge" id="noteSavedBadge">已保存 ✓</span>
   </div>
 
   <!-- WORKSPACE -->
@@ -1703,9 +1688,18 @@
     </div>
 
   </div>
-</div>
 
-<!-- JSON IMPORT MODAL -->
+  </div><!-- end tabPanelDashboard -->
+
+  <!-- TAB PANEL 2: 原始消息展示 -->
+  <div class="tab-panel" id="tabPanelRaw">
+    <div class="raw-message-empty">
+      <div class="raw-message-empty-icon">💬</div>
+      <div class="raw-message-empty-text">原始消息展示区域（待开发）</div>
+    </div>
+  </div>
+
+</div>
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-title">导入 JSON 数据</div>
@@ -1760,6 +1754,36 @@
 </div>
 
 <script>
+// ── TOP TAB SWITCH ──
+function switchTopTab(tab) {
+  // Save current workspace before switching
+  saveCurrentWorkspace();
+
+  state.activeTab = tab;
+  const tabs = document.querySelectorAll('.top-tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(t => t.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
+
+  const sbDashboard = document.getElementById('sidebarDashboard');
+  const sbRaw = document.getElementById('sidebarRaw');
+
+  if (tab === 'dashboard') {
+    document.getElementById('topTab1').classList.add('active');
+    document.getElementById('tabPanelDashboard').classList.add('active');
+    sbDashboard.classList.remove('collapsed');
+    sbRaw.classList.add('collapsed');
+  } else {
+    document.getElementById('topTab2').classList.add('active');
+    document.getElementById('tabPanelRaw').classList.add('active');
+    sbRaw.classList.remove('collapsed');
+    sbDashboard.classList.add('collapsed');
+  }
+
+  // Reload tasks for the new tab
+  loadTasksForTab(tab);
+}
+
 const SUPABASE_URL = 'https://hxmnsekubcztlfruwaap.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4bW5zZWt1YmN6dGxmcnV3YWFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNjE2NjYsImV4cCI6MjA5NDczNzY2Nn0.M7R5zD4uhlZ5NQgJibZXY2uVUuBIBrL8iPnDeg29dz8';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -2130,6 +2154,7 @@ function deleteCustomField(key, categoryName) {
 }
 
 const state = {
+  activeTab: 'dashboard',
   currentTaskId: null,
   tasks: [],
   files: [],
@@ -2151,8 +2176,10 @@ function getCurrentTask() {
 }
 
 function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const collapsed = sidebar.classList.toggle('collapsed');
+  const sidebar = state.activeTab === 'dashboard'
+    ? document.getElementById('sidebarDashboard')
+    : document.getElementById('sidebarRaw');
+  sidebar.classList.toggle('collapsed');
 }
 
 function toggleFilesPanel() {
@@ -2220,12 +2247,6 @@ function setupWorkspaceDivider() {
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => saveToStorage(), 800);
   }
-
-  document.getElementById('notesInput').addEventListener('input', () => {
-    state.notes = document.getElementById('notesInput').value;
-    debounceSave();
-  });
-  document.getElementById('notesInput').addEventListener('blur', saveNote);
 })();
 
 async function saveToStorage() {
@@ -2237,6 +2258,7 @@ async function saveToStorage() {
         text: task.text,
         done: task.done,
         date: task.date,
+        tab_type: task.tab_type || state.activeTab,
         notes: state.notes,
         parsed_data: state.parsedData,
         filter_state: state.filter,
@@ -2264,15 +2286,31 @@ async function loadFromStorage() {
       text: row.text,
       done: row.done,
       date: row.date,
+      tab_type: row.tab_type || 'dashboard',
     }));
-    state.currentTaskId = state.tasks[0].id;
-    loadTaskWorkspace(state.tasks[0]);
-    renderTaskList();
-    renderWorkspace();
+    loadTasksForTab(state.activeTab);
   } catch(e) {
     renderTaskList();
     updateFileNav();
   }
+}
+
+function loadTasksForTab(tab) {
+  const tabTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === tab);
+  if (tabTasks.length > 0) {
+    state.currentTaskId = tabTasks[0].id;
+    loadTaskWorkspace(tabTasks[0]);
+  } else {
+    state.currentTaskId = null;
+    state.notes = '';
+    state.parsedData = null;
+    state.filter = 'all';
+    state.files = [];
+    state.fileText = '';
+  }
+  renderTaskList();
+  renderWorkspace();
+  updateFileNav();
 }
 
 function loadTaskWorkspace(taskRow) {
@@ -2288,14 +2326,17 @@ async function saveCurrentWorkspace() {
 }
 
 function setupTaskInput() {
-  const inp = document.getElementById('taskInput');
-  inp.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTask(); }
+  ['taskInputDashboard', 'taskInputRaw'].forEach(id => {
+    const inp = document.getElementById(id);
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTask(); }
+    });
   });
 }
 
 async function addTask() {
-  const inp = document.getElementById('taskInput');
+  const inpId = state.activeTab === 'dashboard' ? 'taskInputDashboard' : 'taskInputRaw';
+  const inp = document.getElementById(inpId);
   const text = inp.value.trim();
   if (!text) return;
   await saveCurrentWorkspace();
@@ -2304,6 +2345,7 @@ async function addTask() {
     text,
     done: false,
     date: new Date().toLocaleDateString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    tab_type: state.activeTab,
   };
   state.tasks.unshift(task);
   state.currentTaskId = task.id;
@@ -2317,9 +2359,10 @@ async function addTask() {
 async function deleteTask(id) {
   await sb.from('tasks').delete().eq('id', id);
   state.tasks = state.tasks.filter(t => t.id !== id);
+  const tabTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === state.activeTab);
   if (state.currentTaskId === id) {
-    if (state.tasks.length > 0) {
-      await switchToTask(state.tasks[0].id);
+    if (tabTasks.length > 0) {
+      await switchToTask(tabTasks[0].id);
     } else {
       state.currentTaskId = null;
       state.notes = '';
@@ -2345,15 +2388,18 @@ async function switchToTask(id) {
 }
 
 function renderTaskList() {
-  const list = document.getElementById('taskList');
-  const empty = document.getElementById('taskEmpty');
-  if (state.tasks.length === 0) {
-    list.innerHTML = '<div class="task-empty" id="taskEmpty">暂无任务，在下方新建</div>';
+  const listId = state.activeTab === 'dashboard' ? 'taskListDashboard' : 'taskListRaw';
+  const emptyId = state.activeTab === 'dashboard' ? 'taskEmptyDashboard' : 'taskEmptyRaw';
+  const list = document.getElementById(listId);
+  const empty = document.getElementById(emptyId);
+  const tabTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === state.activeTab);
+  if (tabTasks.length === 0) {
+    list.innerHTML = `<div class="task-empty" id="${emptyId}">暂无任务，在下方新建</div>`;
     return;
   }
   empty && (empty.style.display = 'none');
   list.innerHTML = '';
-  state.tasks.forEach(t => {
+  tabTasks.forEach(t => {
     const div = document.createElement('div');
     const isActive = t.id === state.currentTaskId;
     div.className = 'chat-item' + (isActive ? ' active' : '');
@@ -2371,7 +2417,6 @@ function renderTaskList() {
 }
 
 function renderWorkspace() {
-  renderNotes();
   if (state.parsedData) {
     renderDataTable(state.parsedData);
   } else {
@@ -2382,47 +2427,6 @@ function renderWorkspace() {
   updateFileNav();
   renderFileText();
   updateThinkingBtn(state.parsedData);
-}
-
-function renderNotes() {
-  const inp = document.getElementById('notesInput');
-  inp.value = state.notes;
-  applyNotesStyle();
-}
-
-function applyNotesStyle() {
-  const inp = document.getElementById('notesInput');
-  inp.style.fontWeight = state.notesBold ? '700' : '300';
-  inp.style.fontSize = state.notesSize + 'px';
-  inp.style.color = state.notesColor;
-  document.getElementById('notesBoldBtn').classList.toggle('active', state.notesBold);
-  document.getElementById('notesSizeBtn').classList.toggle('active', state.notesSize > 13);
-  document.querySelectorAll('.notes-color-dot').forEach(dot => {
-    const dotColor = dot.style.background || dot.style.backgroundColor;
-    dot.classList.toggle('active', rgbToHex(dotColor) === state.notesColor);
-  });
-}
-
-function rgbToHex(rgb) {
-  if (!rgb || rgb.startsWith('#')) return rgb;
-  const m = rgb.match(/\d+/g);
-  if (!m || m.length < 3) return rgb;
-  return '#' + m.slice(0,3).map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
-}
-
-function toggleNotesBold() {
-  state.notesBold = !state.notesBold;
-  applyNotesStyle();
-}
-
-function toggleNotesSize() {
-  state.notesSize = state.notesSize > 13 ? 13 : 18;
-  applyNotesStyle();
-}
-
-function setNotesColor(color) {
-  state.notesColor = color;
-  applyNotesStyle();
 }
 
 function switchFileTab(tab) {
@@ -2446,15 +2450,6 @@ function setupFileTextSync() {
     clearTimeout(timer);
     timer = setTimeout(() => saveToStorage(), 800);
   });
-}
-
-async function saveNote() {
-  const val = document.getElementById('notesInput').value;
-  state.notes = val;
-  await saveToStorage();
-  const badge = document.getElementById('noteSavedBadge');
-  badge.classList.add('show');
-  setTimeout(() => badge.classList.remove('show'), 1800);
 }
 
 function setupDropZone() {
@@ -2625,9 +2620,21 @@ function closeThinking() {
   document.getElementById('thinkingOverlay').classList.remove('open');
 }
 
+function getDupCodes() {
+  const codeCount = {};
+  const rows = document.querySelectorAll('.data-table tbody tr[data-code]');
+  rows.forEach(row => {
+    const code = row.getAttribute('data-code');
+    if (code && code !== '') {
+      codeCount[code] = (codeCount[code] || 0) + 1;
+    }
+  });
+  return new Set(Object.entries(codeCount).filter(([, c]) => c > 1).map(([code]) => code));
+}
+
 function applyFilter(f) {
   state.filter = f;
-  ['all','hasCode','noCode'].forEach(k => {
+  ['all','hasCode','noCode','dupCode'].forEach(k => {
     document.getElementById('pill-' + k).classList.toggle('active', k === f);
     const card = document.getElementById('stat' + capitalize(k));
     if (card) card.classList.toggle('active', k === f);
@@ -2638,12 +2645,14 @@ function applyFilter(f) {
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 function filterRows() {
+  const dupCodes = state.filter === 'dupCode' ? getDupCodes() : null;
   document.querySelectorAll('.data-table tbody tr[data-code]').forEach(row => {
     const code = row.getAttribute('data-code');
     const hasCode = code && code !== '';
     let show = true;
     if (state.filter === 'hasCode') show = hasCode;
     else if (state.filter === 'noCode') show = !hasCode;
+    else if (state.filter === 'dupCode') show = dupCodes.has(code);
     row.classList.toggle('hidden-row', !show);
   });
 }
@@ -2691,10 +2700,21 @@ function renderDataTable(data) {
 
   let actualData = data;
   if (typeof data.text === 'string' && data.text.trim()) {
-    let found = tryExtractFromString(data.text);
-    if (found) {
-      actualData = found;
+    let directParsed = null;
+    let textToParse = data.text.trim().replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+    try { directParsed = JSON.parse(textToParse); } catch(e) {}
+    if (!directParsed) {
+      try { directParsed = JSON.parse(textToParse.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\')); } catch(e) {}
+    }
+    if (directParsed && typeof directParsed === 'object' && !Array.isArray(directParsed) && (directParsed.new_jobs || directParsed.jobs || directParsed.update_fields || directParsed.oldCompanyShortName)) {
+      actualData = directParsed;
       if (data.workOrderId && !actualData.workOrderId) actualData.workOrderId = data.workOrderId;
+    } else {
+      let found = tryExtractFromString(data.text);
+      if (found) {
+        actualData = found;
+        if (data.workOrderId && !actualData.workOrderId) actualData.workOrderId = data.workOrderId;
+      }
     }
   }
 
@@ -2924,11 +2944,19 @@ function renderNewJobs(data, area) {
         td.innerHTML = '<span style="color:var(--text-muted);font-size:11px">—</span>';
       } else if (typeof val === 'object') {
         td.textContent = JSON.stringify(val);
+        td.style.maxWidth = '200px';
+        td.style.wordBreak = 'break-all';
       } else {
         td.textContent = String(val);
-        if (c === 'welfare') {
-          td.style.maxWidth = '280px';
+        if (['welfare', 'jobIntroduction', 'additionalPolicies', 'jobStay', 'jobCarRental', 'healthApplication'].includes(c)) {
+          td.style.maxWidth = '200px';
           td.style.wordBreak = 'break-all';
+          td.style.lineHeight = '1.6';
+        } else if (['jobName', 'interviewAddress'].includes(c)) {
+          td.style.maxWidth = '180px';
+          td.style.wordBreak = 'break-all';
+        } else if (c === 'needPeopleCount') {
+          td.style.textAlign = 'center';
         }
       }
       tr.appendChild(td);
@@ -3146,9 +3174,20 @@ function updateStats(jobs) {
   const total = jobs.length;
   const hasCode = jobs.filter(j => j.jobCode && j.jobCode !== '').length;
   const noCode = total - hasCode;
+
+  // 计算重复的 jobCode 数量（去重后出现的次数 > 1 的 jobCode 对应的岗位数）
+  const codeCount = {};
+  jobs.forEach(j => {
+    if (j.jobCode && j.jobCode !== '') {
+      codeCount[j.jobCode] = (codeCount[j.jobCode] || 0) + 1;
+    }
+  });
+  const dupCode = Object.values(codeCount).filter(c => c > 1).reduce((sum, c) => sum + c, 0);
+
   document.getElementById('statTotalVal').textContent = total;
   document.getElementById('statHasCodeVal').textContent = hasCode;
   document.getElementById('statNoCodeVal').textContent = noCode;
+  document.getElementById('statDupCodeVal').textContent = dupCode;
 }
 
 function escHtml(str) {
