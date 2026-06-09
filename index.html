@@ -2407,24 +2407,35 @@ function setupWorkspaceDivider() {
 })();
 
 async function saveToStorage() {
-  if (state.currentTaskId) {
-    const task = getCurrentTask();
-    if (task) {
-      const { error } = await sb.from('tasks').upsert({
-        id: task.id,
-        text: task.text,
-        done: task.done,
-        date: task.date,
-        tab_type: task.tab_type || state.activeTab,
-        notes: state.notes,
-        parsed_data: state.parsedData,
-        filter_state: state.filter,
-        files: state.files,
-        file_text: state.fileText,
-      });
-      if (error) console.error('Supabase save error:', error.message);
-    }
+  if (!state.currentTaskId) return;
+  const task = getCurrentTask();
+  if (!task) return;
+
+  // notes 字段存储复合 JSON：dashboard 的 notes + raw 的消息数据
+  let notesObj = {};
+  try { notesObj = JSON.parse(state.notes || '{}'); } catch(e) {}
+  // 如果是 raw tab，把 raw 数据也打包进去
+  if (state.activeTab === 'raw' || rawState.text || rawState.reasoning) {
+    notesObj.rawText = rawState.text;
+    notesObj.rawReasoning = rawState.reasoning;
+    notesObj.rawUsage = rawState.usage;
   }
+  // dashboard 的 notes 纯文本（兼容旧数据）
+  const notesStr = JSON.stringify(notesObj);
+
+  const { error } = await sb.from('tasks').upsert({
+    id: task.id,
+    text: task.text,
+    done: task.done,
+    date: task.date,
+    tab_type: task.tab_type || state.activeTab,
+    notes: notesStr,
+    parsed_data: state.parsedData,
+    filter_state: state.filter,
+    files: state.files,
+    file_text: state.fileText,
+  });
+  if (error) console.error('Supabase save error:', error.message);
 }
 
 async function loadFromStorage() {
@@ -2478,7 +2489,16 @@ function loadTasksForTab(tab) {
 }
 
 function loadTaskWorkspace(taskRow) {
-  state.notes = taskRow.notes || '';
+  // notes 可能是旧版纯文本，也可能是新版 JSON
+  let notesObj = {};
+  try { notesObj = JSON.parse(taskRow.notes || '{}'); } catch(e) { notesObj = {}; }
+  // 如果解析出的对象包含 raw 字段，说明是新版复合数据
+  if (notesObj.rawText !== undefined || notesObj.rawReasoning !== undefined) {
+    state.notes = '';
+  } else {
+    // 旧版纯文本 notes
+    state.notes = taskRow.notes || '';
+  }
   state.parsedData = taskRow.parsed_data || null;
   state.filter = taskRow.filter_state || 'all';
   state.files = taskRow.files || [];
@@ -3418,6 +3438,15 @@ function escAttr(str) {
 }
 
 // ── RAW MESSAGE FUNCTIONS ──
+// 配置 marked.js：图片渲染为「图片」文本
+if (typeof marked !== 'undefined') {
+  const renderer = new marked.Renderer();
+  renderer.image = function(href, title, text) {
+    return '<span style="color:var(--text-muted);font-size:12px;background:var(--cream-dark);padding:2px 8px;border-radius:4px;">🖼 图片</span>';
+  };
+  marked.use({ renderer });
+}
+
 const rawState = {
   text: '',
   reasoning: '',
@@ -3512,24 +3541,7 @@ function toggleRawThinking() {
 }
 
 function saveRawToCurrentTask() {
-  if (!state.currentTaskId) return;
-  const task = getCurrentTask();
-  if (!task) return;
-  // Store raw message data in the task's notes field as JSON
-  sb.from('tasks').upsert({
-    id: task.id,
-    text: task.text,
-    done: task.done,
-    date: task.date,
-    tab_type: task.tab_type || state.activeTab,
-    notes: JSON.stringify({ rawText: rawState.text, rawReasoning: rawState.reasoning, rawUsage: rawState.usage }),
-    parsed_data: null,
-    filter_state: 'all',
-    files: [],
-    file_text: '',
-  }).then(({ error }) => {
-    if (error) console.error('Save raw error:', error.message);
-  });
+  saveToStorage();
 }
 
 function loadRawFromTask(taskRow) {
