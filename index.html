@@ -1991,9 +1991,7 @@
     <div style="border-top:1px solid var(--border);padding:12px 0;margin-top:4px;">
       <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">＋ 添加新商家</div>
       <div style="display:flex;gap:8px;">
-        <input class="merchant-add-input" id="addMerchantName" placeholder="商家名称" />
-        <input class="merchant-add-input" id="addMerchantContact" placeholder="联系人（可选）" style="flex:0.8;" />
-        <input class="merchant-add-input" id="addMerchantPhone" placeholder="电话（可选）" style="flex:0.8;" />
+        <input class="merchant-add-input" id="addMerchantName" placeholder="商家名称" style="flex:1;" />
         <button class="field-add-btn" onclick="addMerchant()">添加</button>
       </div>
     </div>
@@ -3715,12 +3713,8 @@ function renderMerchantList() {
   filtered.forEach(m => {
     const div = document.createElement('div');
     div.className = 'merchant-item';
-    const meta = [m.contact, m.phone].filter(Boolean).join(' · ') || '';
     div.innerHTML = `
-      <div>
-        <div class="merchant-name">${escHtml(m.name)}</div>
-        ${meta ? `<div class="merchant-meta">${escHtml(meta)}</div>` : ''}
-      </div>
+      <div class="merchant-name">${escHtml(m.name)}</div>
       <div class="merchant-delete" onclick="deleteMerchant(${m.id})" title="删除">×</div>
     `;
     list.appendChild(div);
@@ -3734,19 +3728,15 @@ function filterMerchants() {
 
 async function addMerchant() {
   const name = document.getElementById('addMerchantName').value.trim();
-  const contact = document.getElementById('addMerchantContact').value.trim();
-  const phone = document.getElementById('addMerchantPhone').value.trim();
   if (!name) return;
 
-  const { error } = await sb.from('merchants').insert({ name, contact, phone });
+  const { error } = await sb.from('merchants').insert({ name });
   if (error) {
     console.error('Add merchant error:', error.message);
     return;
   }
 
   document.getElementById('addMerchantName').value = '';
-  document.getElementById('addMerchantContact').value = '';
-  document.getElementById('addMerchantPhone').value = '';
   await loadMerchants();
 }
 
