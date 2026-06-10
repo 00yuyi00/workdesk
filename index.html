@@ -1477,6 +1477,97 @@
 
   .field-dict-btn:hover { border-color: var(--amber); color: var(--amber); }
 
+  /* ── MERCHANT MODAL ── */
+  .merchant-search-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .merchant-search {
+    flex: 1;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'Noto Sans SC', sans-serif;
+    outline: none;
+    background: var(--cream);
+  }
+
+  .merchant-search:focus { border-color: var(--amber-light); }
+
+  .merchant-add-input {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    outline: none;
+  }
+
+  .merchant-add-input:focus { border-color: var(--amber-light); }
+
+  .merchant-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .merchant-list::-webkit-scrollbar { width: 3px; }
+  .merchant-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+  .merchant-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: default;
+    transition: background 0.12s;
+    margin-bottom: 1px;
+  }
+
+  .merchant-item:hover { background: var(--cream); }
+
+  .merchant-name {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .merchant-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .merchant-delete {
+    opacity: 0;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 2px 6px;
+    transition: opacity 0.12s;
+  }
+
+  .merchant-item:hover .merchant-delete { opacity: 1; }
+  .merchant-delete:hover { color: #c0392b; }
+
+  .merchant-empty {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .merchant-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
   .field-search {
     flex: 1;
     max-width: 240px;
@@ -1714,6 +1805,7 @@
       <div class="topbar-title">数据可视化工作台</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
+      <button class="field-dict-btn" onclick="openMerchantModal()">🏪 查商家</button>
       <button class="field-dict-btn" onclick="openFieldDict()">📋 查字段</button>
       <div class="topbar-date" id="topbarDate"></div>
     </div>
@@ -1881,6 +1973,32 @@
     </div>
     <div class="modal-actions" style="flex-shrink:0;">
       <button class="btn-ghost" onclick="closeFieldDict()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- MERCHANT MODAL -->
+<div class="modal-overlay" id="merchantOverlay" onclick="if(event.target===this)closeMerchantModal()">
+  <div class="modal" style="max-width:520px;max-height:85vh;display:flex;flex-direction:column;">
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>🏪 商家库</span>
+      <span class="merchant-count" id="merchantCount"></span>
+    </div>
+    <div class="merchant-search-wrap">
+      <input class="merchant-search" id="merchantSearch" placeholder="搜索商家名称…" oninput="filterMerchants()" />
+    </div>
+    <div class="merchant-list" id="merchantList"></div>
+    <div style="border-top:1px solid var(--border);padding:12px 0;margin-top:4px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">＋ 添加新商家</div>
+      <div style="display:flex;gap:8px;">
+        <input class="merchant-add-input" id="addMerchantName" placeholder="商家名称" />
+        <input class="merchant-add-input" id="addMerchantContact" placeholder="联系人（可选）" style="flex:0.8;" />
+        <input class="merchant-add-input" id="addMerchantPhone" placeholder="电话（可选）" style="flex:0.8;" />
+        <button class="field-add-btn" onclick="addMerchant()">添加</button>
+      </div>
+    </div>
+    <div class="modal-actions" style="flex-shrink:0;">
+      <button class="btn-ghost" onclick="closeMerchantModal()">关闭</button>
     </div>
   </div>
 </div>
@@ -3556,6 +3674,90 @@ function loadRawFromTask(taskRow) {
     rawState.usage = null;
   }
   renderRawMessage();
+}
+
+// ── MERCHANT FUNCTIONS ──
+let merchantList = [];
+let merchantFilter = '';
+
+function openMerchantModal() {
+  document.getElementById('merchantOverlay').classList.add('open');
+  document.getElementById('merchantSearch').value = '';
+  merchantFilter = '';
+  loadMerchants();
+}
+
+function closeMerchantModal() {
+  document.getElementById('merchantOverlay').classList.remove('open');
+}
+
+async function loadMerchants() {
+  const { data, error } = await sb.from('merchants').select('*').order('name', { ascending: true });
+  if (error) {
+    console.error('Load merchants error:', error.message);
+    return;
+  }
+  merchantList = data || [];
+  renderMerchantList();
+}
+
+function renderMerchantList() {
+  const list = document.getElementById('merchantList');
+  const filtered = merchantList.filter(m => m.name.toLowerCase().includes(merchantFilter.toLowerCase()));
+  document.getElementById('merchantCount').textContent = `共 ${merchantList.length} 家`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="merchant-empty">未找到商家</div>';
+    return;
+  }
+
+  list.innerHTML = '';
+  filtered.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'merchant-item';
+    const meta = [m.contact, m.phone].filter(Boolean).join(' · ') || '';
+    div.innerHTML = `
+      <div>
+        <div class="merchant-name">${escHtml(m.name)}</div>
+        ${meta ? `<div class="merchant-meta">${escHtml(meta)}</div>` : ''}
+      </div>
+      <div class="merchant-delete" onclick="deleteMerchant(${m.id})" title="删除">×</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function filterMerchants() {
+  merchantFilter = document.getElementById('merchantSearch').value.trim();
+  renderMerchantList();
+}
+
+async function addMerchant() {
+  const name = document.getElementById('addMerchantName').value.trim();
+  const contact = document.getElementById('addMerchantContact').value.trim();
+  const phone = document.getElementById('addMerchantPhone').value.trim();
+  if (!name) return;
+
+  const { error } = await sb.from('merchants').insert({ name, contact, phone });
+  if (error) {
+    console.error('Add merchant error:', error.message);
+    return;
+  }
+
+  document.getElementById('addMerchantName').value = '';
+  document.getElementById('addMerchantContact').value = '';
+  document.getElementById('addMerchantPhone').value = '';
+  await loadMerchants();
+}
+
+async function deleteMerchant(id) {
+  if (!confirm('确定删除该商家？')) return;
+  const { error } = await sb.from('merchants').delete().eq('id', id);
+  if (error) {
+    console.error('Delete merchant error:', error.message);
+    return;
+  }
+  await loadMerchants();
 }
 </script>
 </body>
