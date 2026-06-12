@@ -1796,6 +1796,22 @@
   </div>
 </aside>
 
+<!-- SIDEBAR: JSON Format -->
+<aside class="sidebar collapsed" id="sidebarJsonfmt">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">WorkDesk</div>
+    <div class="sidebar-sub">JSON 格式整理</div>
+  </div>
+  <div class="sidebar-section">任务列表</div>
+  <div class="task-list" id="taskListJsonfmt">
+    <div class="task-empty" id="taskEmptyJsonfmt">暂无任务，在下方新建</div>
+  </div>
+  <div class="add-task-area">
+    <textarea class="add-task-input" id="taskInputJsonfmt" placeholder="输入新任务内容…" rows="1"></textarea>
+    <button class="add-task-btn" onclick="addTask()">＋ 新建任务</button>
+  </div>
+</aside>
+
 <!-- MAIN -->
 <div class="main" style="position:relative;">
   <!-- TOPBAR -->
@@ -1814,10 +1830,9 @@
   <!-- TOP TAB BAR -->
   <div class="top-tab-bar">
     <button class="top-tab active" id="topTab1" onclick="switchTopTab('dashboard')">可视化数据看板</button>
-    <button class="top-tab" id="topTab2" onclick="switchTopTab('raw')">原始消息展示</button>
+  <button class="top-tab" id="topTab2" onclick="switchTopTab('raw')">原始消息展示</button>
+  <button class="top-tab" id="topTab3" onclick="switchTopTab('jsonfmt')">JSON 格式整理</button>
   </div>
-
-  <!-- TAB PANEL 1: 可视化数据看板 -->
   <div class="tab-panel active" id="tabPanelDashboard">
 
   <!-- STATS PANEL -->
@@ -1932,6 +1947,24 @@
       </div>
     </div>
     <div class="raw-usage-bar" id="rawUsageBar" style="display:none;"></div>
+  </div><!-- end tabPanelRaw -->
+
+  <!-- TAB PANEL 3: JSON 格式整理 -->
+  <div class="tab-panel" id="tabPanelJsonfmt">
+    <div class="raw-topbar">
+      <div class="raw-topbar-title">JSON 格式整理</div>
+      <button class="raw-import-btn" onclick="openJsonfmtModal()">⊕ 粘贴 JSON</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="raw-import-btn" id="jsonfmtModeBtn" onclick="toggleJsonfmtMode()" style="display:none;background:var(--cream-dark);color:var(--text-secondary);border:1px solid var(--border);">📋 表格模式</button>
+        <button class="raw-import-btn" id="jsonfmtCopyBtn" onclick="copyJsonfmtText()" style="display:none;background:var(--cream-dark);color:var(--text-secondary);border:1px solid var(--border);">📋 复制文本</button>
+      </div>
+    </div>
+    <div class="raw-content-area" id="jsonfmtContentArea">
+      <div class="raw-message-empty" id="jsonfmtEmpty">
+        <div class="raw-message-empty-icon">📄</div>
+        <div class="raw-message-empty-text">点击右上角「粘贴 JSON」粘贴需要整理的 JSON 文本</div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -2015,6 +2048,20 @@
   </div>
 </div>
 
+<!-- JSON FORMAT MODAL -->
+<div class="modal-overlay" id="jsonfmtModalOverlay" onclick="if(event.target===this)closeJsonfmtModal()">
+  <div class="modal">
+    <div class="modal-title">粘贴 JSON 文本</div>
+    <div class="modal-desc">粘贴大模型输出的 JSON 文本，支持任意 JSON 格式。系统会自动将 <code>\n</code> 等转义字符实际换行展示。</div>
+    <textarea class="modal-textarea" id="jsonfmtTextarea" placeholder='粘贴 JSON 内容…'></textarea>
+    <div class="modal-error" id="jsonfmtModalError">JSON 格式有误，请检查后重试。</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeJsonfmtModal()">取消</button>
+      <button class="btn-primary" onclick="importJsonfmt()">整理并展示</button>
+    </div>
+  </div>
+</div>
+
 <!-- THINKING MODAL -->
 <div class="modal-overlay" id="thinkingOverlay" onclick="if(event.target===this)closeThinking()">
   <div class="modal" style="max-width:720px;max-height:80vh;display:flex;flex-direction:column;">
@@ -2040,17 +2087,26 @@ function switchTopTab(tab) {
 
   const sbDashboard = document.getElementById('sidebarDashboard');
   const sbRaw = document.getElementById('sidebarRaw');
+  const sbJsonfmt = document.getElementById('sidebarJsonfmt');
 
   if (tab === 'dashboard') {
     document.getElementById('topTab1').classList.add('active');
     document.getElementById('tabPanelDashboard').classList.add('active');
     sbDashboard.classList.remove('collapsed');
     sbRaw.classList.add('collapsed');
-  } else {
+    sbJsonfmt.classList.add('collapsed');
+  } else if (tab === 'raw') {
     document.getElementById('topTab2').classList.add('active');
     document.getElementById('tabPanelRaw').classList.add('active');
     sbRaw.classList.remove('collapsed');
     sbDashboard.classList.add('collapsed');
+    sbJsonfmt.classList.add('collapsed');
+  } else {
+    document.getElementById('topTab3').classList.add('active');
+    document.getElementById('tabPanelJsonfmt').classList.add('active');
+    sbJsonfmt.classList.remove('collapsed');
+    sbDashboard.classList.add('collapsed');
+    sbRaw.classList.add('collapsed');
   }
 
   // Reload tasks for the new tab
@@ -2527,7 +2583,7 @@ async function saveToStorage() {
   const task = getCurrentTask();
   if (!task) return;
 
-  // notes 字段存储复合 JSON：dashboard 的 notes + raw 的消息数据
+  // notes 字段存储复合 JSON：dashboard 的 notes + raw 的消息数据 + jsonfmt 数据
   let notesObj = {};
   try { notesObj = JSON.parse(state.notes || '{}'); } catch(e) {}
   // 如果是 raw tab，把 raw 数据也打包进去
@@ -2535,6 +2591,10 @@ async function saveToStorage() {
     notesObj.rawText = rawState.text;
     notesObj.rawReasoning = rawState.reasoning;
     notesObj.rawUsage = rawState.usage;
+  }
+  // 如果是 jsonfmt tab，把 jsonfmt 数据也打包进去
+  if (state.activeTab === 'jsonfmt' || jsonfmtState.text) {
+    notesObj.jsonfmtText = jsonfmtState.text;
   }
   // dashboard 的 notes 纯文本（兼容旧数据）
   const notesStr = JSON.stringify(notesObj);
@@ -2585,6 +2645,7 @@ function loadTasksForTab(tab) {
     state.currentTaskId = tabTasks[0].id;
     loadTaskWorkspace(tabTasks[0]);
     if (tab === 'raw') loadRawFromTask(tabTasks[0]);
+    if (tab === 'jsonfmt') loadJsonfmtFromTask(tabTasks[0]);
   } else {
     state.currentTaskId = null;
     state.notes = '';
@@ -2597,6 +2658,10 @@ function loadTasksForTab(tab) {
       rawState.reasoning = '';
       rawState.usage = null;
       renderRawMessage();
+    }
+    if (tab === 'jsonfmt') {
+      jsonfmtState.text = '';
+      renderJsonfmtMessage();
     }
   }
   renderTaskList();
@@ -2635,7 +2700,7 @@ function setupTaskInput() {
 }
 
 async function addTask() {
-  const inpId = state.activeTab === 'dashboard' ? 'taskInputDashboard' : 'taskInputRaw';
+  const inpId = state.activeTab === 'dashboard' ? 'taskInputDashboard' : (state.activeTab === 'raw' ? 'taskInputRaw' : 'taskInputJsonfmt');
   const inp = document.getElementById(inpId);
   const text = inp.value.trim();
   if (!text) return;
@@ -2655,6 +2720,10 @@ async function addTask() {
     rawState.reasoning = '';
     rawState.usage = null;
     renderRawMessage();
+  }
+  if (state.activeTab === 'jsonfmt') {
+    jsonfmtState.text = '';
+    renderJsonfmtMessage();
   }
   inp.value = '';
   renderTaskList();
@@ -2682,6 +2751,10 @@ async function deleteTask(id) {
         rawState.usage = null;
         renderRawMessage();
       }
+      if (state.activeTab === 'jsonfmt') {
+        jsonfmtState.text = '';
+        renderJsonfmtMessage();
+      }
       renderTaskList();
       renderWorkspace();
     }
@@ -2697,14 +2770,15 @@ async function switchToTask(id) {
   if (data) {
     loadTaskWorkspace(data);
     if (state.activeTab === 'raw') loadRawFromTask(data);
+    if (state.activeTab === 'jsonfmt') loadJsonfmtFromTask(data);
   }
   renderTaskList();
   renderWorkspace();
 }
 
 function renderTaskList() {
-  const listId = state.activeTab === 'dashboard' ? 'taskListDashboard' : 'taskListRaw';
-  const emptyId = state.activeTab === 'dashboard' ? 'taskEmptyDashboard' : 'taskEmptyRaw';
+  const listId = state.activeTab === 'dashboard' ? 'taskListDashboard' : (state.activeTab === 'raw' ? 'taskListRaw' : 'taskListJsonfmt');
+  const emptyId = state.activeTab === 'dashboard' ? 'taskEmptyDashboard' : (state.activeTab === 'raw' ? 'taskEmptyRaw' : 'taskEmptyJsonfmt');
   const list = document.getElementById(listId);
   const empty = document.getElementById(emptyId);
   const tabTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === state.activeTab);
@@ -3672,6 +3746,216 @@ function loadRawFromTask(taskRow) {
     rawState.usage = null;
   }
   renderRawMessage();
+}
+
+// ── JSON FORMAT FUNCTIONS ──
+const jsonfmtState = {
+  text: '',
+  mode: 'text', // 'text' | 'table'
+  tableData: null,
+};
+
+function openJsonfmtModal() {
+  document.getElementById('jsonfmtModalOverlay').classList.add('open');
+  document.getElementById('jsonfmtModalError').style.display = 'none';
+  document.getElementById('jsonfmtTextarea').value = '';
+  document.getElementById('jsonfmtTextarea').focus();
+}
+
+function closeJsonfmtModal() {
+  document.getElementById('jsonfmtModalOverlay').classList.remove('open');
+}
+
+function importJsonfmt() {
+  const raw = document.getElementById('jsonfmtTextarea').value.trim();
+  if (!raw) return;
+
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch(e) {
+    document.getElementById('jsonfmtModalError').style.display = 'block';
+    return;
+  }
+  closeJsonfmtModal();
+
+  // 将 JSON 对象转为格式化字符串，并把 \n 等转义字符实际换行
+  jsonfmtState.text = JSON.stringify(data, null, 2);
+  jsonfmtState.mode = 'text';
+  jsonfmtState.tableData = tryExtractHtmlTable(data);
+  renderJsonfmtMessage();
+  saveToStorage();
+}
+
+function tryExtractHtmlTable(data) {
+  // 从 JSON 的 text 字段中提取 HTML table
+  if (!data || typeof data !== 'object') return null;
+  
+  let htmlText = '';
+  if (typeof data.text === 'string' && data.text.trim()) {
+    htmlText = data.text;
+  } else if (typeof data.elements === 'object' && data.elements !== null) {
+    // 处理 elements 数组中的 text
+    const elements = Array.isArray(data.elements) ? data.elements : [data.elements];
+    for (const el of elements) {
+      if (el && typeof el.text === 'string' && el.text.includes('<table')) {
+        htmlText = el.text;
+        break;
+      }
+    }
+  }
+  
+  if (!htmlText || !htmlText.includes('<table')) return null;
+  
+  // 解析 HTML table
+  return parseHtmlTable(htmlText);
+}
+
+function parseHtmlTable(html) {
+  const rows = [];
+  // 提取所有 tr 标签内容
+  const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+  let trMatch;
+  
+  while ((trMatch = trRegex.exec(html)) !== null) {
+    const trContent = trMatch[1];
+    const cells = [];
+    
+    // 提取 td 和 th
+    const cellRegex = /<(td|th)[^>]*>([\s\S]*?)<\/(td|th)>/gi;
+    let cellMatch;
+    
+    while ((cellMatch = cellRegex.exec(trContent)) !== null) {
+      const cellText = cellMatch[2]
+        .replace(/<[^>]+>/g, '') // 去掉嵌套标签
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      cells.push(cellText);
+    }
+    
+    if (cells.length > 0) {
+      rows.push(cells);
+    }
+  }
+  
+  if (rows.length === 0) return null;
+  
+  return {
+    headers: rows[0],
+    data: rows.slice(1),
+  };
+}
+
+function renderJsonfmtMessage() {
+  const area = document.getElementById('jsonfmtContentArea');
+  const modeBtn = document.getElementById('jsonfmtModeBtn');
+  const copyBtn = document.getElementById('jsonfmtCopyBtn');
+
+  if (!jsonfmtState.text) {
+    area.innerHTML = '<div class="raw-message-empty"><div class="raw-message-empty-icon">📄</div><div class="raw-message-empty-text">点击右上角「粘贴 JSON」粘贴需要整理的 JSON 文本</div></div>';
+    modeBtn.style.display = 'none';
+    copyBtn.style.display = 'none';
+    return;
+  }
+
+  copyBtn.style.display = 'inline-block';
+  
+  // 如果有表格数据，显示模式切换按钮
+  if (jsonfmtState.tableData) {
+    modeBtn.style.display = 'inline-block';
+    modeBtn.textContent = jsonfmtState.mode === 'text' ? '📋 表格模式' : '📝 文本模式';
+  } else {
+    modeBtn.style.display = 'none';
+  }
+
+  if (jsonfmtState.mode === 'table' && jsonfmtState.tableData) {
+    renderJsonfmtTable(area);
+  } else {
+    renderJsonfmtText(area);
+  }
+}
+
+function renderJsonfmtText(area) {
+  // 将 \n 等转义字符实际换行展示
+  let formatted = jsonfmtState.text
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
+    .replace(/\\r/g, '\r')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\');
+
+  area.innerHTML = `<pre style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;font-size:13px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;word-break:break-all;font-family:'Courier New',monospace;overflow-x:auto;">${escHtml(formatted)}</pre>`;
+}
+
+function renderJsonfmtTable(area) {
+  const { headers, data } = jsonfmtState.tableData;
+  
+  let html = '<div class="table-wrap" style="border-radius:var(--radius-sm);border:1px solid var(--border);overflow:hidden;">';
+  html += '<table class="data-table">';
+  
+  // 表头
+  html += '<thead><tr>';
+  headers.forEach(h => {
+    html += `<th>${escHtml(h)}</th>`;
+  });
+  html += '</tr></thead>';
+  
+  // 数据行
+  html += '<tbody>';
+  data.forEach((row, i) => {
+    html += '<tr>';
+    row.forEach((cell, j) => {
+      html += `<td>${escHtml(cell)}</td>`;
+    });
+    // 如果数据列数少于表头，补空单元格
+    for (let k = row.length; k < headers.length; k++) {
+      html += '<td><span style="color:var(--text-muted)">—</span></td>';
+    }
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  
+  html += '</table></div>';
+  html += `<div style="margin-top:12px;font-size:11px;color:var(--text-muted);text-align:right;">共 ${data.length} 行数据</div>`;
+  
+  area.innerHTML = html;
+}
+
+function toggleJsonfmtMode() {
+  jsonfmtState.mode = jsonfmtState.mode === 'text' ? 'table' : 'text';
+  renderJsonfmtMessage();
+}
+
+function copyJsonfmtText() {
+  navigator.clipboard.writeText(jsonfmtState.text).then(() => {
+    const btn = document.getElementById('jsonfmtCopyBtn');
+    const oldText = btn.textContent;
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => btn.textContent = oldText, 1500);
+  });
+}
+
+function loadJsonfmtFromTask(taskRow) {
+  try {
+    const d = JSON.parse(taskRow.notes || '{}');
+    jsonfmtState.text = d.jsonfmtText || '';
+    if (jsonfmtState.text) {
+      try {
+        const data = JSON.parse(jsonfmtState.text);
+        jsonfmtState.tableData = tryExtractHtmlTable(data);
+      } catch(e) {
+        jsonfmtState.tableData = null;
+      }
+    } else {
+      jsonfmtState.tableData = null;
+    }
+  } catch(e) {
+    jsonfmtState.text = '';
+    jsonfmtState.tableData = null;
+  }
+  jsonfmtState.mode = 'text';
+  renderJsonfmtMessage();
 }
 
 // ── MERCHANT FUNCTIONS ──
