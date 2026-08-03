@@ -889,6 +889,32 @@
     background: var(--warm-white);
   }
 
+  /* JSON 字数统计 */
+  .json-char-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--text-secondary);
+  }
+
+  .json-char-stats .stat-chip {
+    background: var(--cream-dark);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
+  .json-char-stats .stat-chip b {
+    color: var(--amber);
+    font-weight: 600;
+    margin-left: 2px;
+  }
+
   .import-json-btn {
     display: flex;
     align-items: center;
@@ -989,10 +1015,25 @@
     line-height: 1.5;
   }
 
+  /* 长文本字段：加宽并限制 6 行内展示 */
+  .data-table td.cell-wide {
+    min-width: 320px;
+    max-width: 480px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  /* 所有字段单元格内容：完整展示（不截断），保留换行 */
+  .data-table td .cell-clamp {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   .data-table tr:hover td { background: var(--cream); }
 
   .data-table tr.hidden-row { display: none; }
-  .data-table tr.dup-highlight { background: var(--dup-bg, transparent); }
+  /* 重复编码高亮：作用于 td，且 hover 时保持高亮色不被覆盖 */
+  .data-table tr.dup-highlight td { background: var(--dup-bg, transparent); }
+  .data-table tr.dup-highlight:hover td { background: var(--dup-bg, transparent); }
 
   .job-code {
     font-family: 'Courier New', monospace;
@@ -1760,6 +1801,235 @@
   }
 
   .field-add-btn:hover { background: #b8870f; }
+
+  /* ── 知识库 KB ── */
+  .kb-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--warm-white);
+    flex-wrap: wrap;
+  }
+
+  .kb-toolbar-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-right: auto;
+  }
+
+  .kb-btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--cream-dark);
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .kb-btn:hover { border-color: var(--amber-light); color: var(--amber); }
+
+  .kb-btn.primary {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: white;
+  }
+
+  .kb-btn.primary:hover { background: #b8870f; }
+
+  .kb-content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+
+  .kb-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--warm-white);
+  }
+
+  .kb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+  }
+
+  .kb-table th {
+    background: var(--cream-dark);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+  }
+
+  .kb-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    vertical-align: top;
+    word-break: break-word;
+  }
+
+  .kb-table tr:last-child td { border-bottom: none; }
+  .kb-table tr:hover td { background: var(--cream); }
+
+  .kb-col-id { width: 56px; }
+  .kb-col-question { width: 30%; }
+  .kb-col-answer { width: 46%; }
+  .kb-col-tag { width: 18%; }
+
+  .kb-id-cell {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .kb-tag-chip {
+    display: inline-block;
+    background: var(--amber-soft);
+    color: var(--text-secondary);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin: 2px 3px 2px 0;
+  }
+
+  .kb-task-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .kb-task-title b { color: var(--text-secondary); font-weight: 500; }
+
+  .kb-empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+  }
+
+  .kb-empty-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.3; }
+
+  /* ── SQL 查询记录 ── */
+  .sql-block-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(44,36,22,0.06));
+  }
+
+  .sql-block-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sql-block-title {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-family: 'Noto Sans SC', sans-serif;
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .sql-block-title:hover, .sql-block-title:focus {
+    border-color: var(--border);
+    background: var(--warm-white);
+  }
+
+  .sql-block-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .sql-copy-btn, .sql-del-btn {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--warm-white);
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .sql-copy-btn:hover { border-color: var(--amber-light); color: var(--amber); }
+  .sql-copy-btn.copied { background: var(--amber); border-color: var(--amber); color: #fff; }
+  .sql-del-btn:hover { border-color: #d97b6c; color: #c0543f; }
+
+  /* 白色代码编辑区 */
+  .sql-code-input {
+    display: block;
+    width: 100%;
+    min-height: 110px;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    padding: 16px 18px;
+    background: var(--warm-white);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    tab-size: 2;
+    box-sizing: border-box;
+  }
+
+  .sql-code-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  .sql-add-btn {
+    width: 100%;
+    padding: 13px;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .sql-add-btn:hover {
+    border-color: var(--amber-light);
+    color: var(--amber);
+    background: var(--amber-soft);
+  }
+
+  /* 知识库任务列表：文件名完整显示（允许换行） */
+  #taskListKb .chat-item-text {
+    white-space: normal;
+    word-break: break-all;
+    overflow: visible;
+    text-overflow: unset;
+  }
 </style>
 </head>
 <body>
@@ -1812,6 +2082,36 @@
   </div>
 </aside>
 
+<!-- SIDEBAR: Knowledge Base -->
+<aside class="sidebar collapsed" id="sidebarKb">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">WorkDesk</div>
+    <div class="sidebar-sub">知识库存储</div>
+  </div>
+  <div class="sidebar-section">任务列表</div>
+  <div class="task-list" id="taskListKb">
+    <div class="task-empty" id="taskEmptyKb">暂无任务，点击下方新建</div>
+  </div>
+  <div class="add-task-area">
+    <button class="add-task-btn" onclick="openKbCreateModal()">＋ 新建任务</button>
+  </div>
+</aside>
+
+<!-- SIDEBAR: SQL 查询记录 -->
+<aside class="sidebar collapsed" id="sidebarSql">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">WorkDesk</div>
+    <div class="sidebar-sub">SQL 查询记录</div>
+  </div>
+  <div class="sidebar-section">任务列表</div>
+  <div class="task-list" id="taskListSql">
+    <div class="task-empty" id="taskEmptySql">暂无任务，点击下方创建任务</div>
+  </div>
+  <div class="add-task-area">
+    <button class="add-task-btn" onclick="openSqlCreateModal()">＋ 创建任务</button>
+  </div>
+</aside>
+
 <!-- MAIN -->
 <div class="main" style="position:relative;">
   <!-- TOPBAR -->
@@ -1832,6 +2132,8 @@
     <button class="top-tab active" id="topTab1" onclick="switchTopTab('dashboard')">可视化数据看板</button>
   <button class="top-tab" id="topTab2" onclick="switchTopTab('raw')">原始消息展示</button>
   <button class="top-tab" id="topTab3" onclick="switchTopTab('jsonfmt')">JSON 格式整理</button>
+  <button class="top-tab" id="topTab4" onclick="switchTopTab('kb')">知识库存储</button>
+  <button class="top-tab" id="topTab5" onclick="switchTopTab('sql')">SQL 查询记录</button>
   </div>
   <div class="tab-panel active" id="tabPanelDashboard">
 
@@ -1912,6 +2214,7 @@
         <span style="display:flex;align-items:center;gap:10px;">
           JSON 数据可视化
           <button class="sidebar-toggle" id="showFilesBtn" onclick="toggleFilesPanel()" title="展开文件预览" style="display:flex;width:24px;height:24px;font-size:11px;">▶</button>
+          <span class="json-char-stats" id="jsonCharStats" style="display:none;"></span>
         </span>
         <span style="display:flex;align-items:center;gap:10px;">
           <button class="import-json-btn" onclick="openModal()">
@@ -1963,6 +2266,40 @@
       <div class="raw-message-empty" id="jsonfmtEmpty">
         <div class="raw-message-empty-icon">📄</div>
         <div class="raw-message-empty-text">点击右上角「粘贴 JSON」粘贴需要整理的 JSON 文本</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB PANEL 4: 知识库存储 -->
+  <div class="tab-panel" id="tabPanelKb">
+    <div class="kb-toolbar">
+      <span class="kb-toolbar-title">📚 知识库存储</span>
+      <button class="kb-btn primary" onclick="openKbImportModal()">⊕ 导入 JSON</button>
+      <button class="kb-btn" id="kbThinkingBtn" onclick="openKbThinking()" style="display:none;">🧠 查看思考过程</button>
+      <button class="kb-btn" onclick="openKbAllModal()">📋 查看所有问答</button>
+    </div>
+    <div class="kb-content-area" id="kbContentArea">
+      <div class="kb-empty" id="kbEmpty">
+        <div class="kb-empty-icon">📚</div>
+        <div>点击右上角「导入 JSON」粘贴知识库数据<br>将按「问题 / 答案 / 标签」三列展示</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB PANEL 5: SQL 查询记录 -->
+  <div class="tab-panel" id="tabPanelSql">
+    <div class="kb-toolbar">
+      <span class="kb-toolbar-title">🗄️ SQL 查询记录</span>
+      <button class="kb-btn primary" id="sqlAddBlockBtn" onclick="addSqlBlock()" style="display:none;">＋ 添加 SQL 代码块</button>
+    </div>
+    <div class="kb-content-area" id="sqlContentArea" style="overflow-y:auto;">
+      <div class="kb-empty" id="sqlEmpty">
+        <div class="kb-empty-icon">🗄️</div>
+        <div>点击左侧「创建任务」新建一个 SQL 查询记录<br>然后点「添加 SQL 代码块」记录你的 SQL 语句</div>
+      </div>
+      <div id="sqlWorkspace" style="display:none;">
+        <div id="sqlBlocksList"></div>
+        <button class="sql-add-btn" onclick="addSqlBlock()">＋ 添加 SQL 代码块</button>
       </div>
     </div>
   </div>
@@ -2073,6 +2410,62 @@
   </div>
 </div>
 
+<!-- KB CREATE TASK MODAL -->
+<div class="modal-overlay" id="kbCreateOverlay" onclick="if(event.target===this)closeKbCreateModal()">
+  <div class="modal">
+    <div class="modal-title">新建知识库任务</div>
+    <div class="modal-desc">输入文件链接（URL 编码会自动转为中文显示），若没有文件，也可输入任意字符作为任务标记。</div>
+    <input class="modal-textarea" id="kbCreateInput" style="min-height:0;height:44px;padding:10px 14px;font-family:'Noto Sans SC',sans-serif;" placeholder="粘贴文件链接或输入任务标记…" />
+    <div class="modal-error" id="kbCreateError">请输入文件链接或任务标记。</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeKbCreateModal()">取消</button>
+      <button class="btn-primary" onclick="createKbTask()">创建任务</button>
+    </div>
+  </div>
+</div>
+
+<!-- KB IMPORT JSON MODAL -->
+<div class="modal-overlay" id="kbImportOverlay" onclick="if(event.target===this)closeKbImportModal()">
+  <div class="modal">
+    <div class="modal-title">导入知识库 JSON</div>
+    <div class="modal-desc">粘贴包含 <code>text</code>、<code>reasoning_content</code> 的 JSON 数据，<code>text</code> 内的问答数组将按「问题 / 答案 / 标签」三列展示。</div>
+    <textarea class="modal-textarea" id="kbImportTextarea" placeholder='粘贴 JSON 内容…'></textarea>
+    <div class="modal-error" id="kbImportError">JSON 格式有误或未找到问答数组，请检查后重试。</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeKbImportModal()">取消</button>
+      <button class="btn-primary" onclick="importKbJson()">解析并展示</button>
+    </div>
+  </div>
+</div>
+
+<!-- KB ALL QA MODAL -->
+<div class="modal-overlay" id="kbAllOverlay" onclick="if(event.target===this)closeKbAllModal()">
+  <div class="modal" style="width:92vw;max-width:1400px;max-height:88vh;display:flex;flex-direction:column;">
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>📋 所有知识库问答</span>
+      <span style="font-size:12px;color:var(--text-muted);font-weight:400;" id="kbAllCount"></span>
+    </div>
+    <div id="kbAllContent" style="flex:1;overflow:auto;padding:4px 0;"></div>
+    <div class="modal-actions" style="flex-shrink:0;">
+      <button class="btn-ghost" onclick="closeKbAllModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- SQL CREATE TASK MODAL -->
+<div class="modal-overlay" id="sqlCreateOverlay" onclick="if(event.target===this)closeSqlCreateModal()">
+  <div class="modal">
+    <div class="modal-title">创建 SQL 查询任务</div>
+    <div class="modal-desc">输入任务名称，创建后可记录 Markdown 笔记和 SQL 代码模块。</div>
+    <input class="modal-textarea" id="sqlCreateInput" style="min-height:0;height:44px;padding:10px 14px;font-family:'Noto Sans SC',sans-serif;" placeholder="输入任务名称，如：统计各站点近 7 天岗位数…" />
+    <div class="modal-error" id="sqlCreateError">请输入任务名称。</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeSqlCreateModal()">取消</button>
+      <button class="btn-primary" onclick="createSqlTask()">创建任务</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── TOP TAB SWITCH ──
 function switchTopTab(tab) {
@@ -2088,25 +2481,31 @@ function switchTopTab(tab) {
   const sbDashboard = document.getElementById('sidebarDashboard');
   const sbRaw = document.getElementById('sidebarRaw');
   const sbJsonfmt = document.getElementById('sidebarJsonfmt');
+  const sbKb = document.getElementById('sidebarKb');
+  const sbSql = document.getElementById('sidebarSql');
+  const allSidebars = [sbDashboard, sbRaw, sbJsonfmt, sbKb, sbSql];
+  const hideAll = () => allSidebars.forEach(s => s && s.classList.add('collapsed'));
 
   if (tab === 'dashboard') {
     document.getElementById('topTab1').classList.add('active');
     document.getElementById('tabPanelDashboard').classList.add('active');
-    sbDashboard.classList.remove('collapsed');
-    sbRaw.classList.add('collapsed');
-    sbJsonfmt.classList.add('collapsed');
+    hideAll(); sbDashboard.classList.remove('collapsed');
   } else if (tab === 'raw') {
     document.getElementById('topTab2').classList.add('active');
     document.getElementById('tabPanelRaw').classList.add('active');
-    sbRaw.classList.remove('collapsed');
-    sbDashboard.classList.add('collapsed');
-    sbJsonfmt.classList.add('collapsed');
+    hideAll(); sbRaw.classList.remove('collapsed');
+  } else if (tab === 'kb') {
+    document.getElementById('topTab4').classList.add('active');
+    document.getElementById('tabPanelKb').classList.add('active');
+    hideAll(); sbKb.classList.remove('collapsed');
+  } else if (tab === 'sql') {
+    document.getElementById('topTab5').classList.add('active');
+    document.getElementById('tabPanelSql').classList.add('active');
+    hideAll(); sbSql.classList.remove('collapsed');
   } else {
     document.getElementById('topTab3').classList.add('active');
     document.getElementById('tabPanelJsonfmt').classList.add('active');
-    sbJsonfmt.classList.remove('collapsed');
-    sbDashboard.classList.add('collapsed');
-    sbRaw.classList.add('collapsed');
+    hideAll(); sbJsonfmt.classList.remove('collapsed');
   }
 
   // Reload tasks for the new tab
@@ -2118,62 +2517,75 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const FIELD_ZH = {
+  // ── 基础信息 ──
+  jobName: '岗位名称',
+  city: '城市',
+  project: '项目',
+  company_short_name: '商家名',
+  industry: '行业',
   status: '招聘状态',
-  gender: '性别',
-  age: '年龄区间',
   needPeopleCount: '需求人数',
-  supportPartTime: '是否兼职',
-  supportSeasonalWorkers: '是否要寒暑假工',
-  payDate: '发薪日',
-  healthApplication: '健康证要求',
-  interviewContactPerson: '面试联系人',
-  interviewContactMobile: '面试电话',
+  jobIntroduction: '岗位介绍',
+  jobRequirements: '岗位要求',
   interviewAddress: '面试地址',
-  workTime: '工作时间',
-  paid_in_amt: '结算价格',
-  endRuleTime: '保护期/天',
-  endRuleDays: '结算周期/天',
-  endRuleDetail: '结算规则详情',
-  extEndRuleDetail: '撞单规则',
-  boostPolicy: '加码政策',
-  jobStay: '住宿情况',
-  jobCarRental: '车辆交通',
-  jobWorkCloth: '装备情况',
+  address: '站点地址或地址',
+  interviewContactMobile: '面试联系电话',
+  interviewTimeSlot: '面试时间段',
+  specialRemark: '特殊备注',
+  stationShortName: '站点简称',
+  // ── 薪资福利 ──
+  averageCount: '平均单量',
   welfare: '薪资方案',
-  additionalPolicies: '福利内容',
-  specialAdvance: '预支规则',
+  mealFee: '餐补情况',
+  additionalPolicies: '额外政策',
+  specialAdvance: '特殊预支规则',
+  payDate: '发薪日期',
+  payCycle: '薪资结算周期',
+  // ── 人员要求 ──
+  gender: '性别',
+  age: '年龄',
+  needXinJiang: '是否要新疆人',
+  supportPartTime: '是否兼职',
+  partTimeRequest: '兼职要求',
+  supportSeasonalWorkers: '寒暑假工',
+  vacationJobReq: '寒暑假工要求',
+  healthApplication: '健康证办理要求/费用',
+  // ── 费用装备 ──
+  jobDeposit: '入职押金及明细',
+  jobStay: '住宿相关情况',
+  hasFemaleStay: '是否有女生宿舍',
+  needStayStore: '是否驻店',
+  jobCarRental: '租车方式及费用',
+  jobWorkCloth: '餐箱工服等费用',
+  // ── 业务结算 ──
+  paid_in_amt: '结算价格',
+  workTime: '工作时间',
+  secondHand: '是否二手单',
+  boostPolicy: '加码政策',
+  endRuleTime: '推送保护时间',
+  endRuleDays: '跟进天数/结算周期/需在职天数',
+  endRuleCount: '结算次数',
+  endRuleDetail: '结算详细规则',
+  extEndRuleDetail: '判重规则',
+  // ── 其他保留字段 ──
+  interviewContactPerson: '面试联系人',
   averagePrice: '平均单价',
   minSalary: '最低薪酬',
   maxSalary: '最高薪酬',
-  averageCount: '平均单量',
   maxUnitPrice: '最高单价',
   minUnitPrice: '最低单价',
-  payCycle: '薪资结算周期',
-  mealFee: '餐补情况',
   additionalPoliciesCar: '额外政策-车',
   additionalPoliciesStay: '额外政策-住',
   additionalPoliciesCashSubsidy: '额外政策-现金补贴',
   additionalPoliciesItemSubsidy: '额外政策-装备补贴',
   endRulePrice: '结算金额',
-  endRuleCount: '结算次数',
-  jobIntroduction: '岗位介绍',
-  jobDeposit: '入职押金',
-  jobRequirements: '岗位要求',
-  needStayStore: '是否驻店',
-  needXinJiang: '是否要新疆人',
-  hasFemaleStay: '是否有女生宿舍',
-  partTimeRequest: '兼职要求',
   lowCreditScoreCarRentalDeposit: '低信用分免押租车',
   hasCanteen: '有无食堂',
-  specialRemark: '特殊备注',
-  secondHand: '是否二手单',
   RiderDeliverySystem: '骑手跑单系统',
-  interviewTimeSlot: '面试时间段',
-  vacationJobReq: '寒暑假工要求',
   job_code: '岗位编码',
   job_name: '岗位名',
+  jobCode: '岗位编码',
   company_name: '公司名',
-  company_short_name: '公司简称',
   station_name: '站点名称',
   station_short_name: '站点简称',
   area_code: '区划代码',
@@ -2183,14 +2595,11 @@ const FIELD_ZH = {
   station_code: '站点编码',
   city_code: '城市编码',
   business_area: '商圈名',
-  address: '地址',
   detail_address: '详细地址',
   audit_status: '审核状态',
   refuse_reason: '拒绝原因',
   refuse_memo: '拒绝备注',
   parse_type: '解析类型',
-  jobName: '岗位名称',
-  jobCode: '岗位编码',
   changes: '变更字段',
   field: '字段名',
   value: '值',
@@ -2202,19 +2611,40 @@ const FIELD_ZH = {
   oldCompanyShortName: '原商家简称',
   newCompanyShortName: '新商家简称',
   filters: '过滤条件',
-  project: '项目',
-  city: '城市',
-  company_short_name: '商家简称',
   update_fields: '更新字段列表',
   fieldName: '字段名',
   newValue: '新值',
   new_jobs: '新增岗位列表',
-  welfare: '薪资方案',
   remark: '备注',
-  industry: '行业',
 };
 
 function zh(key) { return FIELD_ZH[key] || key; }
+
+// 需要加宽展示的长文本字段（保留，用于自适应判断的候选）
+const WIDE_FIELDS = new Set(['additionalPolicies', 'vacationJobReq', 'boostPolicy', 'endRuleDetail', 'extEndRuleDetail']);
+
+// 给单元格内容包一层 6 行限制；渲染后自适应检测：超过 6 行则加宽该单元格
+function applyWideCell(td, fieldKey, text) {
+  const inner = document.createElement('div');
+  inner.className = 'cell-clamp';
+  inner.textContent = text;
+  td.textContent = '';
+  td.appendChild(inner);
+}
+
+// 渲染完成后调用：检测所有单元格，内容超过约 6 行的加宽展示（全文不截断）
+function autoWidenCells(container) {
+  const lineHeight = 22.5; // 约 15px 字号 * 1.5 行高
+  const maxH = lineHeight * 6;
+  container.querySelectorAll('.data-table td .cell-clamp').forEach(inner => {
+    const td = inner.parentElement;
+    td.classList.remove('cell-wide');
+    if (inner.scrollHeight > maxH + 2) {
+      td.classList.add('cell-wide');
+      td.style.removeProperty('max-width'); // 清除内联 maxWidth，让 cell-wide 生效
+    }
+  });
+}
 
 const FIELD_CATEGORIES = [
   {
@@ -2495,6 +2925,7 @@ const state = {
   notesColor: '#2c2416',
   fileText: '',
   fileTab: 'image',
+  rawJsonText: '',
 };
 
 function getTaskById(id) {
@@ -2596,6 +3027,20 @@ async function saveToStorage() {
   if (state.activeTab === 'jsonfmt' || jsonfmtState.text) {
     notesObj.jsonfmtText = jsonfmtState.text;
   }
+  // 如果是 kb tab，把 kb 数据也打包进去
+  if (state.activeTab === 'kb' || kbState.items.length > 0 || kbState.reasoning) {
+    notesObj.kbItems = kbState.items;
+    notesObj.kbReasoning = kbState.reasoning;
+    notesObj.kbUsage = kbState.usage;
+  }
+  // 如果是 sql tab，把 sql 数据也打包进去
+  if (state.activeTab === 'sql' || sqlState.blocks.length > 0) {
+    notesObj.sqlBlocks = sqlState.blocks;
+  }
+  // dashboard tab，保存原始 JSON 文本用于字数统计恢复
+  if (state.activeTab === 'dashboard' && state.rawJsonText) {
+    notesObj.rawJsonText = state.rawJsonText;
+  }
   // dashboard 的 notes 纯文本（兼容旧数据）
   const notesStr = JSON.stringify(notesObj);
 
@@ -2611,7 +3056,27 @@ async function saveToStorage() {
     files: state.files,
     file_text: state.fileText,
   });
-  if (error) console.error('Supabase save error:', error.message);
+  if (error) {
+    console.error('Supabase save error:', error.message);
+    // parsed_data 过大可能导致整行 upsert 失败，此时尝试只保存轻量字段 + rawJsonText，
+    // 保证刷新后能从原文恢复表格
+    if (state.parsedData) {
+      const { error: e2 } = await sb.from('tasks').upsert({
+        id: task.id,
+        text: task.text,
+        done: task.done,
+        date: task.date,
+        tab_type: task.tab_type || state.activeTab,
+        notes: notesStr,
+        parsed_data: null,
+        filter_state: state.filter,
+        files: state.files,
+        file_text: state.fileText,
+      });
+      if (e2) console.error('Supabase fallback save error:', e2.message);
+      else console.warn('parsed_data 过大，已改为保存原始 JSON 文本（刷新后可恢复）');
+    }
+  }
 }
 
 async function loadFromStorage() {
@@ -2631,6 +3096,11 @@ async function loadFromStorage() {
       done: row.done,
       date: row.date,
       tab_type: row.tab_type || 'dashboard',
+      notes: row.notes,
+      parsed_data: row.parsed_data,
+      filter_state: row.filter_state,
+      files: row.files,
+      file_text: row.file_text,
     }));
     loadTasksForTab(state.activeTab);
   } catch(e) {
@@ -2646,6 +3116,10 @@ function loadTasksForTab(tab) {
     loadTaskWorkspace(tabTasks[0]);
     if (tab === 'raw') loadRawFromTask(tabTasks[0]);
     if (tab === 'jsonfmt') loadJsonfmtFromTask(tabTasks[0]);
+    if (tab === 'kb') loadKbFromTask(tabTasks[0]);
+    if (tab === 'sql') loadSqlFromTask(tabTasks[0]);
+    // 再从 Supabase 拉一次完整行，确保展示最新数据
+    refreshTaskFromDb(tabTasks[0].id, tab);
   } else {
     state.currentTaskId = null;
     state.notes = '';
@@ -2653,6 +3127,7 @@ function loadTasksForTab(tab) {
     state.filter = 'all';
     state.files = [];
     state.fileText = '';
+    state.rawJsonText = '';
     if (tab === 'raw') {
       rawState.text = '';
       rawState.reasoning = '';
@@ -2662,6 +3137,16 @@ function loadTasksForTab(tab) {
     if (tab === 'jsonfmt') {
       jsonfmtState.text = '';
       renderJsonfmtMessage();
+    }
+    if (tab === 'kb') {
+      kbState.items = [];
+      kbState.reasoning = '';
+      kbState.usage = null;
+      renderKbTable();
+    }
+    if (tab === 'sql') {
+      sqlState.blocks = [];
+      renderSqlWorkspace();
     }
   }
   renderTaskList();
@@ -2684,6 +3169,15 @@ function loadTaskWorkspace(taskRow) {
   state.filter = taskRow.filter_state || 'all';
   state.files = taskRow.files || [];
   state.fileText = taskRow.file_text || '';
+  state.rawJsonText = notesObj.rawJsonText || '';
+  // 兜底：若 parsed_data 未保存成功（如 JSON 过大导致 jsonb 写入失败），
+  // 则用保存的原始 JSON 文本重新解析恢复
+  if (!state.parsedData && state.rawJsonText) {
+    try {
+      const reparsed = tryParseJSON(state.rawJsonText);
+      if (reparsed) state.parsedData = reparsed;
+    } catch(e) {}
+  }
 }
 
 async function saveCurrentWorkspace() {
@@ -2693,6 +3187,7 @@ async function saveCurrentWorkspace() {
 function setupTaskInput() {
   ['taskInputDashboard', 'taskInputRaw'].forEach(id => {
     const inp = document.getElementById(id);
+    if (!inp) return;
     inp.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTask(); }
     });
@@ -2725,6 +3220,12 @@ async function addTask() {
     jsonfmtState.text = '';
     renderJsonfmtMessage();
   }
+  if (state.activeTab === 'kb') {
+    kbState.items = [];
+    kbState.reasoning = '';
+    kbState.usage = null;
+    renderKbTable();
+  }
   inp.value = '';
   renderTaskList();
   renderWorkspace();
@@ -2745,6 +3246,7 @@ async function deleteTask(id) {
       state.filter = 'all';
       state.files = [];
       state.fileText = '';
+      state.rawJsonText = '';
       if (state.activeTab === 'raw') {
         rawState.text = '';
         rawState.reasoning = '';
@@ -2754,6 +3256,16 @@ async function deleteTask(id) {
       if (state.activeTab === 'jsonfmt') {
         jsonfmtState.text = '';
         renderJsonfmtMessage();
+      }
+      if (state.activeTab === 'kb') {
+        kbState.items = [];
+        kbState.reasoning = '';
+        kbState.usage = null;
+        renderKbTable();
+      }
+      if (state.activeTab === 'sql') {
+        sqlState.blocks = [];
+        renderSqlWorkspace();
       }
       renderTaskList();
       renderWorkspace();
@@ -2771,14 +3283,32 @@ async function switchToTask(id) {
     loadTaskWorkspace(data);
     if (state.activeTab === 'raw') loadRawFromTask(data);
     if (state.activeTab === 'jsonfmt') loadJsonfmtFromTask(data);
+    if (state.activeTab === 'kb') loadKbFromTask(data);
+    if (state.activeTab === 'sql') loadSqlFromTask(data);
   }
   renderTaskList();
   renderWorkspace();
 }
 
+// 打开 tab 后后台静默刷新一次任务完整数据，保证展示最新内容
+async function refreshTaskFromDb(id, tab) {
+  try {
+    const { data } = await sb.from('tasks').select('*').eq('id', id).single();
+    if (!data) return;
+    // 仅在仍处于该 tab 且仍是当前任务时更新，避免覆盖用户切换
+    if (state.activeTab !== tab || state.currentTaskId !== id) return;
+    if (tab === 'kb') loadKbFromTask(data);
+    if (tab === 'raw') loadRawFromTask(data);
+    if (tab === 'jsonfmt') loadJsonfmtFromTask(data);
+    if (tab === 'sql') loadSqlFromTask(data);
+  } catch(e) {}
+}
+
 function renderTaskList() {
-  const listId = state.activeTab === 'dashboard' ? 'taskListDashboard' : (state.activeTab === 'raw' ? 'taskListRaw' : 'taskListJsonfmt');
-  const emptyId = state.activeTab === 'dashboard' ? 'taskEmptyDashboard' : (state.activeTab === 'raw' ? 'taskEmptyRaw' : 'taskEmptyJsonfmt');
+  const listIdMap = { dashboard: 'taskListDashboard', raw: 'taskListRaw', jsonfmt: 'taskListJsonfmt', kb: 'taskListKb', sql: 'taskListSql' };
+  const emptyIdMap = { dashboard: 'taskEmptyDashboard', raw: 'taskEmptyRaw', jsonfmt: 'taskEmptyJsonfmt', kb: 'taskEmptyKb', sql: 'taskEmptySql' };
+  const listId = listIdMap[state.activeTab] || 'taskListDashboard';
+  const emptyId = emptyIdMap[state.activeTab] || 'taskEmptyDashboard';
   const list = document.getElementById(listId);
   const empty = document.getElementById(emptyId);
   const tabTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === state.activeTab);
@@ -2816,6 +3346,7 @@ function renderWorkspace() {
   updateFileNav();
   renderFileText();
   updateThinkingBtn(state.parsedData);
+  renderJsonCharStats(state.parsedData ? state.rawJsonText : '');
 }
 
 function switchFileTab(tab) {
@@ -2944,14 +3475,30 @@ async function importJSON() {
     let parsed = tryParseJSON(raw);
     if (!parsed) throw new Error('parse failed');
     state.parsedData = parsed;
+    state.rawJsonText = raw;
     await saveToStorage();
     renderDataTable(parsed);
     updateThinkingBtn(parsed);
+    renderJsonCharStats(raw);
     closeModal();
     document.getElementById('jsonTextarea').value = '';
   } catch(e) {
     errEl.classList.add('show');
   }
+}
+
+// 统计 JSON 文本的中文/英文/总字符数并展示
+function renderJsonCharStats(text) {
+  const el = document.getElementById('jsonCharStats');
+  if (!text) { el.style.display = 'none'; return; }
+  const total = text.length;
+  const cn = (text.match(/[一-龥]/g) || []).length;
+  const en = (text.match(/[a-zA-Z]/g) || []).length;
+  el.innerHTML =
+    '<span class="stat-chip">中文<b>' + cn.toLocaleString() + '</b></span>' +
+    '<span class="stat-chip">英文<b>' + en.toLocaleString() + '</b></span>' +
+    '<span class="stat-chip">总字符<b>' + total.toLocaleString() + '</b></span>';
+  el.style.display = 'inline-flex';
 }
 
 function tryParseJSON(str) {
@@ -3152,6 +3699,79 @@ function renderFiltersInfo(filters, area) {
   area.appendChild(info);
 }
 
+// 截断修复：当模型输出被 max_tokens 截断时，回退到括号平衡的完整前缀并补齐闭合
+function tryRepairTruncatedJson(str) {
+  if (!str || typeof str !== 'string') return null;
+  const s = str.trim();
+  if (!s.startsWith('{') && !s.startsWith('[')) return null;
+
+  const n = s.length;
+  // 解析字符串状态时，需要排除 \" 转义
+  function buildStringMask(upto) {
+    const inStr = new Array(upto).fill(false);
+    let inS = false;
+    for (let i = 0; i < upto; i++) {
+      const ch = s[i];
+      if (ch === '\\') { inStr[i] = inS; if (i + 1 < upto) inStr[i + 1] = inS; i++; continue; }
+      if (ch === '"') { inStr[i] = inS; inS = !inS; continue; }
+      inStr[i] = inS;
+    }
+    return inStr;
+  }
+
+  // 尝试在每个位置截断，找到括号平衡且能成功解析的最长前缀
+  // 从后往前找候选截断点（对象/数组结束符或逗号），避免 O(n^2)
+  const mask = buildStringMask(n);
+  const candidates = [];
+  for (let i = n - 1; i >= 0; i--) {
+    if (mask[i]) continue; // 跳过字符串内部
+    const ch = s[i];
+    if (ch === '}' || ch === ']') candidates.push(i + 1);
+    if (ch === ',') candidates.push(i); // 逗号处截断（去掉逗号）
+    if (candidates.length >= 60) break; // 限制尝试次数
+  }
+
+  function tryClose(upto) {
+    let sub = s.slice(0, upto);
+    // 去掉末尾多余逗号
+    sub = sub.replace(/,\s*$/, '');
+    // 计算未闭合的括号栈
+    const stack = [];
+    let inS = false;
+    for (let i = 0; i < sub.length; i++) {
+      const ch = sub[i];
+      if (ch === '\\') { i++; continue; }
+      if (ch === '"') { inS = !inS; continue; }
+      if (inS) continue;
+      if (ch === '{' || ch === '[') stack.push(ch);
+      else if (ch === '}') { if (stack[stack.length-1] === '{') stack.pop(); }
+      else if (ch === ']') { if (stack[stack.length-1] === '[') stack.pop(); }
+    }
+    if (stack.length === 0) return null;
+    // 按相反顺序闭合
+    let closing = '';
+    for (let i = stack.length - 1; i >= 0; i--) {
+      closing += (stack[i] === '{') ? '}' : ']';
+    }
+    const fixed = sub + closing;
+    try {
+      const parsed = JSON.parse(fixed);
+      return parsed;
+    } catch(e) { return null; }
+  }
+
+  for (const upto of candidates) {
+    const result = tryClose(upto);
+    if (result && typeof result === 'object') {
+      // 必须是看板能识别的格式
+      if (result.jobs || result.new_jobs || result.update_fields || result.oldCompanyShortName || result.output) {
+        return result;
+      }
+    }
+  }
+  return null;
+}
+
 function renderDataTable(data) {
   const area = document.getElementById('dataTableArea');
   const emptyEl = document.getElementById('emptyData');
@@ -3165,6 +3785,10 @@ function renderDataTable(data) {
     try { directParsed = JSON.parse(textToParse); } catch(e) {}
     if (!directParsed) {
       try { directParsed = JSON.parse(textToParse.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\')); } catch(e) {}
+    }
+    // 模型输出被 max_tokens 截断时，尝试截断修复
+    if (!directParsed) {
+      directParsed = tryRepairTruncatedJson(textToParse);
     }
     if (directParsed && typeof directParsed === 'object' && !Array.isArray(directParsed) && (directParsed.new_jobs || directParsed.jobs || directParsed.update_fields || directParsed.oldCompanyShortName)) {
       actualData = directParsed;
@@ -3192,6 +3816,7 @@ function renderDataTable(data) {
       renderGenericArray(jobs, area);
       updateStats(jobs);
       filterRows();
+      requestAnimationFrame(() => autoWidenCells(area));
       return;
     }
   }
@@ -3226,6 +3851,8 @@ function renderDataTable(data) {
   }
 
   filterRows();
+  // 渲染完成后自适应检测：内容超过 6 行的单元格自动加宽
+  requestAnimationFrame(() => autoWidenCells(area));
 }
 
 function extractJobs(data) {
@@ -3382,8 +4009,6 @@ function renderFieldUpdate(data, area) {
   table.appendChild(tbody);
   wrap.appendChild(table);
   sec.appendChild(wrap);
-
-  updateStats([{jobCode: ''}, ...fields.map(() => ({jobCode: ''}))]);
 }
 
 function renderNewJobs(data, area) {
@@ -3435,20 +4060,16 @@ function renderNewJobs(data, area) {
       if (val === null || val === undefined) {
         td.innerHTML = '<span style="color:var(--text-muted);font-size:11px">—</span>';
       } else if (typeof val === 'object') {
-        td.textContent = JSON.stringify(val);
+        applyWideCell(td, c, JSON.stringify(val));
         td.style.maxWidth = '200px';
-        td.style.wordBreak = 'break-all';
       } else {
-        td.textContent = String(val);
-        if (['welfare', 'jobIntroduction', 'additionalPolicies', 'jobStay', 'jobCarRental', 'healthApplication'].includes(c)) {
+        applyWideCell(td, c, String(val));
+        if (c === 'needPeopleCount') {
+          td.style.textAlign = 'center';
+        } else if (['welfare', 'jobIntroduction', 'additionalPolicies', 'jobStay', 'jobCarRental', 'healthApplication'].includes(c)) {
           td.style.maxWidth = '200px';
-          td.style.wordBreak = 'break-all';
-          td.style.lineHeight = '1.6';
         } else if (['jobName', 'interviewAddress'].includes(c)) {
           td.style.maxWidth = '180px';
-          td.style.wordBreak = 'break-all';
-        } else if (c === 'needPeopleCount') {
-          td.style.textAlign = 'center';
         }
       }
       tr.appendChild(td);
@@ -3533,7 +4154,7 @@ function renderJobsSection(jobs, area) {
       const td = document.createElement('td');
       const val = changeMap[f];
       if (val !== undefined) {
-        td.textContent = val;
+        applyWideCell(td, f, String(val));
         if (f === 'commission') {
           td.style.fontVariantNumeric = 'tabular-nums';
           td.style.color = 'var(--amber)';
@@ -3614,8 +4235,8 @@ function renderGenericArray(arr, area) {
       const td = document.createElement('td');
       const val = item[k];
       if (val === null || val === undefined) td.innerHTML = '<span style="color:var(--text-muted)">—</span>';
-      else if (typeof val === 'object') td.textContent = JSON.stringify(val);
-      else td.textContent = val;
+      else if (typeof val === 'object') applyWideCell(td, k, JSON.stringify(val));
+      else applyWideCell(td, k, String(val));
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
@@ -4169,6 +4790,431 @@ async function deleteMerchant(id) {
     return;
   }
   await loadMerchants();
+}
+
+// ── KNOWLEDGE BASE (KB) FUNCTIONS ──
+const kbState = {
+  items: [],
+  reasoning: '',
+  usage: null,
+};
+
+// 将带百分号的 URL 编码转为中文显示；解码失败则原样返回
+function kbDecodeUrl(str) {
+  if (!str) return str;
+  try {
+    const decoded = decodeURIComponent(str);
+    return decoded !== str ? decoded : str;
+  } catch (e) {
+    return str;
+  }
+}
+
+// 从 URL 中提取解码后的文件名；非 URL 则原样解码返回
+function kbDisplayName(str) {
+  if (!str) return str;
+  const decoded = kbDecodeUrl(str);
+  if (/^https?:\/\//i.test(decoded)) {
+    // 去掉 query/hash，取最后一段路径作为文件名
+    const noQuery = decoded.split(/[?#]/)[0];
+    const parts = noQuery.split('/').filter(Boolean);
+    const last = parts[parts.length - 1] || decoded;
+    return last || decoded;
+  }
+  return decoded;
+}
+
+function openKbCreateModal() {
+  document.getElementById('kbCreateOverlay').classList.add('open');
+  document.getElementById('kbCreateError').style.display = 'none';
+  const inp = document.getElementById('kbCreateInput');
+  inp.value = '';
+  setTimeout(() => inp.focus(), 50);
+}
+
+function closeKbCreateModal() {
+  document.getElementById('kbCreateOverlay').classList.remove('open');
+}
+
+async function createKbTask() {
+  const rawVal = document.getElementById('kbCreateInput').value.trim();
+  if (!rawVal) {
+    document.getElementById('kbCreateError').style.display = 'block';
+    return;
+  }
+  closeKbCreateModal();
+  await saveCurrentWorkspace();
+
+  const displayText = kbDisplayName(rawVal);
+  const task = {
+    id: Date.now(),
+    text: displayText,
+    done: false,
+    date: new Date().toLocaleDateString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    tab_type: 'kb',
+  };
+  state.tasks.unshift(task);
+  state.currentTaskId = task.id;
+  kbState.items = [];
+  kbState.reasoning = '';
+  kbState.usage = null;
+  renderTaskList();
+  renderKbTable();
+  await saveToStorage();
+}
+
+function openKbImportModal() {
+  if (!state.currentTaskId) {
+    alert('请先在左侧新建一个知识库任务');
+    return;
+  }
+  document.getElementById('kbImportOverlay').classList.add('open');
+  document.getElementById('kbImportError').style.display = 'none';
+  document.getElementById('kbImportTextarea').value = '';
+  setTimeout(() => document.getElementById('kbImportTextarea').focus(), 50);
+}
+
+function closeKbImportModal() {
+  document.getElementById('kbImportOverlay').classList.remove('open');
+}
+
+// 从解析后的 JSON 中提取问答数组（优先 text 字段）
+function extractKbItems(data) {
+  if (!data) return null;
+  // 直接是数组
+  if (Array.isArray(data)) {
+    return data.filter(it => it && (it.question || it.answer));
+  }
+  if (typeof data.text === 'string' && data.text.trim()) {
+    let cleaned = data.text.trim().replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+    let parsed = null;
+    try { parsed = JSON.parse(cleaned); } catch(e) {}
+    if (!parsed) {
+      try { parsed = JSON.parse(cleaned.replace(/\\n/g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\')); } catch(e) {}
+    }
+    if (Array.isArray(parsed)) return parsed.filter(it => it && (it.question || it.answer));
+    if (parsed && typeof parsed === 'object') {
+      for (const key of Object.keys(parsed)) {
+        if (Array.isArray(parsed[key])) {
+          const arr = parsed[key].filter(it => it && (it.question || it.answer));
+          if (arr.length) return arr;
+        }
+      }
+    }
+  }
+  // 在对象任意字段中查找数组
+  if (typeof data === 'object') {
+    for (const key of Object.keys(data)) {
+      if (Array.isArray(data[key])) {
+        const arr = data[key].filter(it => it && (it.question || it.answer));
+        if (arr.length) return arr;
+      }
+    }
+  }
+  return null;
+}
+
+function importKbJson() {
+  const raw = document.getElementById('kbImportTextarea').value.trim();
+  if (!raw) return;
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch(e) {
+    document.getElementById('kbImportError').style.display = 'block';
+    return;
+  }
+  const items = extractKbItems(data);
+  if (!items || items.length === 0) {
+    document.getElementById('kbImportError').style.display = 'block';
+    return;
+  }
+  closeKbImportModal();
+
+  kbState.items = items.map((it, i) => ({
+    id: (typeof it.id === 'number' && it.id > 0) ? it.id : i + 1,
+    question: it.question || '',
+    answer: it.answer || '',
+    tag: Array.isArray(it.tag) ? it.tag : (it.tag ? [it.tag] : []),
+  }));
+  kbState.reasoning = data.reasoning_content || '';
+  kbState.usage = data.usage || null;
+
+  renderKbTable();
+  saveToStorage();
+}
+
+function renderKbTable() {
+  const area = document.getElementById('kbContentArea');
+  const thinkingBtn = document.getElementById('kbThinkingBtn');
+  thinkingBtn.style.display = kbState.reasoning ? 'inline-flex' : 'none';
+
+  if (!kbState.items.length) {
+    area.innerHTML = '<div class="kb-empty" id="kbEmpty"><div class="kb-empty-icon">📚</div><div>点击右上角「导入 JSON」粘贴知识库数据<br>将按「问题 / 答案 / 标签」三列展示</div></div>';
+    return;
+  }
+
+  const task = getCurrentTask();
+  const sorted = [...kbState.items].sort((a, b) => a.id - b.id);
+
+  let html = '';
+  if (task) {
+    html += `<div class="kb-task-title">当前任务：<b>${escHtml(task.text)}</b> · 共 ${sorted.length} 条问答</div>`;
+  }
+  html += '<div class="kb-table-wrap"><table class="kb-table"><thead><tr>';
+  html += '<th class="kb-col-id">编号</th><th class="kb-col-question">问题</th><th class="kb-col-answer">答案</th><th class="kb-col-tag">标签</th>';
+  html += '</tr></thead><tbody>';
+  sorted.forEach(it => {
+    const tags = (it.tag || []).map(t => `<span class="kb-tag-chip">${escHtml(String(t))}</span>`).join('');
+    html += `<tr><td class="kb-id-cell">${it.id}</td><td>${escHtml(it.question)}</td><td>${escHtml(it.answer)}</td><td>${tags}</td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  area.innerHTML = html;
+}
+
+function openKbThinking() {
+  if (!kbState.reasoning) return;
+  const formatted = kbState.reasoning.replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '');
+  document.getElementById('thinkingContent').textContent = formatted;
+  document.getElementById('thinkingOverlay').classList.add('open');
+}
+
+// 汇总所有 kb 任务保存的问答
+async function collectAllKbItems() {
+  const kbTasks = state.tasks.filter(t => (t.tab_type || 'dashboard') === 'kb');
+  if (!kbTasks.length) return [];
+  const { data, error } = await sb.from('tasks').select('id, text, notes').in('id', kbTasks.map(t => t.id));
+  if (error || !data) {
+    console.error('Load kb tasks error:', error && error.message);
+    return [];
+  }
+  const taskNameMap = {};
+  kbTasks.forEach(t => taskNameMap[t.id] = t.text);
+  const all = [];
+  data.forEach(row => {
+    try {
+      const notesObj = JSON.parse(row.notes || '{}');
+      const items = Array.isArray(notesObj.kbItems) ? notesObj.kbItems : [];
+      items.forEach((it, i) => {
+        all.push({
+          seq: 0,
+          id: (typeof it.id === 'number' && it.id > 0) ? it.id : i + 1,
+          question: it.question || '',
+          answer: it.answer || '',
+          tag: Array.isArray(it.tag) ? it.tag : (it.tag ? [it.tag] : []),
+          taskName: taskNameMap[row.id] || '',
+        });
+      });
+    } catch(e) {}
+  });
+  all.forEach((it, i) => it.seq = i + 1);
+  return all;
+}
+
+async function openKbAllModal() {
+  document.getElementById('kbAllOverlay').classList.add('open');
+  const content = document.getElementById('kbAllContent');
+  document.getElementById('kbAllCount').textContent = '加载中…';
+  content.innerHTML = '<div class="kb-empty" style="padding:40px;"><div>正在加载所有问答…</div></div>';
+
+  const all = await collectAllKbItems();
+  document.getElementById('kbAllCount').textContent = `共 ${all.length} 条问答`;
+
+  if (!all.length) {
+    content.innerHTML = '<div class="kb-empty" style="padding:40px;"><div class="kb-empty-icon">📭</div><div>暂无知识库问答数据</div></div>';
+    return;
+  }
+
+  let html = '<div class="kb-table-wrap" style="margin:0 4px;"><table class="kb-table"><thead><tr>';
+  html += '<th class="kb-col-id">编号</th><th class="kb-col-question">问题</th><th class="kb-col-answer">答案</th><th class="kb-col-tag">标签</th><th style="width:14%;">来源任务</th>';
+  html += '</tr></thead><tbody>';
+  all.forEach(it => {
+    const tags = (it.tag || []).map(t => `<span class="kb-tag-chip">${escHtml(String(t))}</span>`).join('');
+    html += `<tr><td class="kb-id-cell">${it.seq}</td><td>${escHtml(it.question)}</td><td>${escHtml(it.answer)}</td><td>${tags}</td><td style="font-size:12px;color:var(--text-muted);">${escHtml(it.taskName)}</td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  content.innerHTML = html;
+}
+
+function closeKbAllModal() {
+  document.getElementById('kbAllOverlay').classList.remove('open');
+}
+
+function loadKbFromTask(taskRow) {
+  try {
+    const d = JSON.parse(taskRow.notes || '{}');
+    kbState.items = Array.isArray(d.kbItems) ? d.kbItems : [];
+    kbState.reasoning = d.kbReasoning || '';
+    kbState.usage = d.kbUsage || null;
+  } catch(e) {
+    kbState.items = [];
+    kbState.reasoning = '';
+    kbState.usage = null;
+  }
+  renderKbTable();
+}
+
+/* ══════════════ SQL 查询记录 ══════════════ */
+const sqlState = {
+  blocks: [], // [{ id, title, code }]
+};
+
+let _sqlSeq = 0;
+const _sqlUid = () => 'b' + Date.now().toString(36) + (++_sqlSeq);
+
+let _sqlSaveTimer = null;
+function sqlDebounceSave() {
+  clearTimeout(_sqlSaveTimer);
+  _sqlSaveTimer = setTimeout(() => saveToStorage(), 800);
+}
+
+// ── 创建任务弹窗 ──
+function openSqlCreateModal() {
+  document.getElementById('sqlCreateOverlay').classList.add('open');
+  document.getElementById('sqlCreateError').style.display = 'none';
+  const inp = document.getElementById('sqlCreateInput');
+  inp.value = '';
+  setTimeout(() => inp.focus(), 50);
+}
+
+function closeSqlCreateModal() {
+  document.getElementById('sqlCreateOverlay').classList.remove('open');
+}
+
+async function createSqlTask() {
+  const name = document.getElementById('sqlCreateInput').value.trim();
+  if (!name) {
+    document.getElementById('sqlCreateError').style.display = 'block';
+    return;
+  }
+  closeSqlCreateModal();
+  await saveCurrentWorkspace();
+
+  const task = {
+    id: Date.now(),
+    text: name,
+    done: false,
+    date: new Date().toLocaleDateString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    tab_type: 'sql',
+  };
+  state.tasks.unshift(task);
+  state.currentTaskId = task.id;
+  sqlState.blocks = [];
+  renderTaskList();
+  renderSqlWorkspace();
+  await saveToStorage();
+}
+
+// ── 从任务加载 ──
+function loadSqlFromTask(taskRow) {
+  try {
+    const d = JSON.parse(taskRow.notes || '{}');
+    sqlState.blocks = Array.isArray(d.sqlBlocks) ? d.sqlBlocks : [];
+  } catch(e) {
+    sqlState.blocks = [];
+  }
+  renderSqlWorkspace();
+}
+
+// ── 整体渲染 ──
+function renderSqlWorkspace() {
+  const hasTask = !!(state.currentTaskId && state.activeTab === 'sql');
+  document.getElementById('sqlEmpty').style.display = hasTask ? 'none' : 'block';
+  document.getElementById('sqlWorkspace').style.display = hasTask ? 'block' : 'none';
+  document.getElementById('sqlAddBlockBtn').style.display = hasTask ? 'inline-flex' : 'none';
+  if (!hasTask) return;
+  renderSqlBlocks();
+}
+
+// ── 代码块 CRUD ──
+function addSqlBlock() {
+  sqlState.blocks.push({ id: _sqlUid(), title: '查询 ' + (sqlState.blocks.length + 1), code: '' });
+  renderSqlBlocks();
+  sqlDebounceSave();
+  setTimeout(() => {
+    const areas = document.querySelectorAll('#sqlBlocksList .sql-code-input');
+    if (areas.length) {
+      const last = areas[areas.length - 1];
+      last.focus();
+      last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, 50);
+}
+
+function removeSqlBlock(id) {
+  sqlState.blocks = sqlState.blocks.filter(b => b.id !== id);
+  renderSqlBlocks();
+  sqlDebounceSave();
+}
+
+function updateSqlBlockTitle(id, val) {
+  const b = sqlState.blocks.find(b => b.id === id);
+  if (b) { b.title = val; sqlDebounceSave(); }
+}
+
+function updateSqlBlockCode(id, ta) {
+  const b = sqlState.blocks.find(b => b.id === id);
+  if (b) { b.code = ta.value; sqlDebounceSave(); }
+  autoGrowSqlCode(ta);
+}
+
+function autoGrowSqlCode(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.max(110, ta.scrollHeight) + 'px';
+}
+
+function renderSqlBlocks() {
+  const list = document.getElementById('sqlBlocksList');
+  if (!sqlState.blocks.length) {
+    list.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:10px 2px 18px;text-align:center;">暂无 SQL 代码块，点击下方按钮添加。</div>';
+    return;
+  }
+  list.innerHTML = sqlState.blocks.map(b => `
+    <div class="sql-block-card">
+      <div class="sql-block-head">
+        <input class="sql-block-title" value="${escAttr(b.title)}" placeholder="代码块标题…" onchange="updateSqlBlockTitle('${b.id}', this.value)" />
+        <div class="sql-block-actions">
+          <button class="sql-copy-btn" onclick="copySqlBlock('${b.id}', this)">📋 复制</button>
+          <button class="sql-del-btn" onclick="removeSqlBlock('${b.id}')" title="删除">🗑</button>
+        </div>
+      </div>
+      <textarea class="sql-code-input" placeholder="SELECT * FROM …" spellcheck="false" oninput="updateSqlBlockCode('${b.id}', this)">${escHtml(b.code)}</textarea>
+    </div>
+  `).join('');
+  // 恢复每个代码框高度
+  list.querySelectorAll('.sql-code-input').forEach(autoGrowSqlCode);
+}
+
+function copySqlBlock(id, btn) {
+  const b = sqlState.blocks.find(b => b.id === id);
+  if (!b) return;
+  copySqlText(b.code, btn);
+}
+
+// ── 复制 ──
+function copySqlText(text, btn) {
+  const done = () => {
+    btn.textContent = '✓ 已复制';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 复制'; btn.classList.remove('copied'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  done && done();
 }
 </script>
 </body>
